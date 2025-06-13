@@ -1,0 +1,61 @@
+<div class="row">
+  <div class="col-md-3">
+    <div class="list-group">
+      <a href="/admin" class="list-group-item list-group-item-action">
+        Dashboard
+      </a>
+      <a href="/admin/portfolio" class="list-group-item list-group-item-action">
+        Portfolio
+      </a>
+      <a href="/admin/blog" class="list-group-item list-group-item-action active">
+        Blog
+      </a>
+      <a href="/admin/messages" class="list-group-item list-group-item-action">
+        Messages
+      </a>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="card">
+      <div class="card-body">
+        <h2 class="card-title">Blog Posts</h2>
+        <p class="card-text">Latest posts from your Medium blog.</p>
+        
+        <div id="blogPosts" class="list-group mt-4"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+async function loadBlogPosts() {
+  try {
+    const response = await fetch('/api/blog');
+    const data = await response.json();
+    
+    if (response.ok) {
+      const blogPosts = document.getElementById('blogPosts');
+      blogPosts.innerHTML = data.data.map(post => `
+        <div class="list-group-item">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">
+              <a href="${post.link}" target="_blank" class="text-decoration-none">
+                ${post.title}
+              </a>
+            </h5>
+            <small class="text-muted">
+              ${new Date(post.pubDate).toLocaleDateString()}
+            </small>
+          </div>
+        </div>
+      `).join('');
+    }
+  } catch (error) {
+    console.error('Error loading blog posts:', error);
+    alert('Error loading blog posts');
+  }
+}
+
+// Load blog posts on page load
+loadBlogPosts();
+</script> 

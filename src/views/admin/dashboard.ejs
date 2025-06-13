@@ -1,0 +1,56 @@
+<div class="row">
+  <div class="col-md-3">
+    <div class="list-group">
+      <a href="/admin" class="list-group-item list-group-item-action active">
+        Dashboard
+      </a>
+      <a href="/admin/portfolio" class="list-group-item list-group-item-action">
+        Portfolio
+      </a>
+      <a href="/admin/blog" class="list-group-item list-group-item-action">
+        Blog
+      </a>
+      <a href="/admin/messages" class="list-group-item list-group-item-action">
+        Messages
+      </a>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="card">
+      <div class="card-body">
+        <h2 class="card-title">Welcome, <%= user.username %></h2>
+        <p class="card-text">Manage your portfolio content from this dashboard.</p>
+        
+        <div class="row mt-4">
+          <div class="col-md-4">
+            <div class="card bg-primary text-white">
+              <div class="card-body">
+                <h5 class="card-title">Portfolio</h5>
+                <p class="card-text">Manage your skills and projects</p>
+                <a href="/admin/portfolio" class="btn btn-light">Manage</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card bg-success text-white">
+              <div class="card-body">
+                <h5 class="card-title">Blog</h5>
+                <p class="card-text">View your Medium posts</p>
+                <a href="/admin/blog" class="btn btn-light">View</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card bg-info text-white">
+              <div class="card-body">
+                <h5 class="card-title">Messages</h5>
+                <p class="card-text">Check contact form submissions</p>
+                <a href="/admin/messages" class="btn btn-light">View</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 
