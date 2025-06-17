@@ -10,7 +10,6 @@ const session = require('express-session');
 // Import routes
 const authRoutes = require('./routes/auth.routes');
 const portfolioRoutes = require('./routes/portfolio.routes');
-const contactRoutes = require('./routes/contact.routes');
 const adminRoutes = require('./routes/admin.routes');
 
 // Import middleware
@@ -29,7 +28,9 @@ app.use(helmet({
             styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
             fontSrc: ["'self'", "https://fonts.gstatic.com"],
             imgSrc: ["'self'", "data:", "https:"],
-            connectSrc: ["'self'"]
+            connectSrc: ["'self'"],
+            frameSrc: ["'self'", "https://tryhackme.com"],
+            frameAncestors: ["'self'"]
         }
     }
 }));
@@ -57,7 +58,6 @@ app.set('views', path.join(__dirname, 'views'));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/portfolio', portfolioRoutes);
-app.use('/api/contact', contactRoutes);
 app.use('/admin', sessionGuard, adminRoutes);
 
 // Home route

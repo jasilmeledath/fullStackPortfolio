@@ -1,0 +1,61 @@
+<div class="lg:col-span-1">
+    <div class="bg-gray-900/50 border border-green-500/30 rounded-lg p-6 backdrop-blur-sm">
+        <h3 class="text-lg font-bold mb-4 text-green-400">
+            <i class="fas fa-terminal mr-2"></i>NAVIGATION
+        </h3>
+        <nav class="space-y-2">
+            <a href="/admin" class="nav-item active flex items-center px-4 py-3 rounded-lg transition-all duration-300">
+                <i class="fas fa-tachometer-alt mr-3 w-5"></i>
+                <span>Dashboard</span>
+                <div class="ml-auto w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            </a>
+            <a href="/admin/portfolio" class="nav-item flex items-center px-4 py-3 rounded-lg transition-all duration-300">
+                <i class="fas fa-briefcase mr-3 w-5"></i>
+                <span>Portfolio</span>
+            </a>
+            <a href="/admin/blog" class="nav-item flex items-center px-4 py-3 rounded-lg transition-all duration-300">
+                <i class="fas fa-blog mr-3 w-5"></i>
+                <span>Blog</span>
+            </a>
+            <a href="/admin/messages" class="nav-item flex items-center px-4 py-3 rounded-lg transition-all duration-300">
+                <i class="fas fa-envelope mr-3 w-5"></i>
+                <span>Messages</span>
+                <span class="ml-auto bg-red-500 text-black text-xs px-2 py-1 rounded-full">3</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- System Status -->
+    <div class="mt-6 bg-gray-900/50 border border-green-500/30 rounded-lg p-6 backdrop-blur-sm">
+        <h3 class="text-lg font-bold mb-4 text-green-400">
+            <i class="fas fa-server mr-2"></i>SYSTEM_STATUS
+        </h3>
+        <div class="space-y-3">
+            <div class="flex justify-between items-center">
+                <span class="text-sm">CPU Usage</span>
+                <div class="flex items-center">
+                    <div class="w-16 h-2 bg-gray-700 rounded-full mr-2">
+                        <div class="cpu-bar h-full bg-green-500 rounded-full transition-all duration-1000"></div>
+                    </div>
+                    <span class="text-xs cpu-percent">45%</span>
+                </div>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-sm">Memory</span>
+                <div class="flex items-center">
+                    <div class="w-16 h-2 bg-gray-700 rounded-full mr-2">
+                        <div class="memory-bar h-full bg-cyan-500 rounded-full transition-all duration-1000"></div>
+                    </div>
+                    <span class="text-xs memory-percent">67%</span>
+                </div>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-sm">Network</span>
+                <div class="flex items-center">
+                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"></div>
+                    <span class="text-xs">ONLINE</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const { ApiError } = require('../middleware/error.middleware');
+const HTTP_STATUS = require('../constants/httpStatus');
 
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
@@ -16,19 +17,19 @@ const login = async (req, res, next) => {
     const { username, password } = req.method === 'POST' ? req.body : req.query;
 
     if (!username || !password) {
-      throw new ApiError(400, 'Username and password are required');
+      throw new ApiError(HTTP_STATUS.BAD_REQUEST, 'Username and password are required');
     }
 
     // Find user and include password for comparison
     const user = await User.findOne({ username }).select('+password');
     if (!user) {
-      throw new ApiError(401, 'Invalid credentials');
+      throw new ApiError(HTTP_STATUS.UNAUTHORIZED, 'Invalid credentials');
     }
 
     // Compare password
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
-      throw new ApiError(401, 'Invalid credentials');
+      throw new ApiError(HTTP_STATUS.UNAUTHORIZED, 'Invalid credentials');
     }
 
     // Generate JWT
@@ -43,7 +44,7 @@ const login = async (req, res, next) => {
 
     // If it's an AJAX request, return JSON
     if (req.xhr || req.headers.accept?.includes('application/json')) {
-      return res.json({
+      return res.status(HTTP_STATUS.OK).json({
         status: 'success',
         token,
         user: {
@@ -64,13 +65,13 @@ const login = async (req, res, next) => {
 const logout = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      return res.status(500).json({
+      return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
         status: 'error',
         message: 'Error logging out'
       });
     }
     res.clearCookie('connect.sid');
-    res.json({
+    res.status(HTTP_STATUS.OK).json({
       status: 'success',
       message: 'Logged out successfully'
     });
@@ -78,7 +79,7 @@ const logout = (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-  res.json({
+  res.status(HTTP_STATUS.OK).json({
     status: 'success',
     user: req.session.user
   });

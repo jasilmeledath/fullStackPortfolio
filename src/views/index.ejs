@@ -1,298 +1,2574 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title %> | Portfolio</title>
-  
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Custom CSS -->
-  <link href="/css/style.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberDev Portfolio - <%= user?.name || 'Anonymous' %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/home.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
-<body>
-  <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-light fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="/">Portfolio</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="#home">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#about">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#skills">Skills</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#projects">Projects</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#blog">Blog</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#contact">Contact</a>
-          </li>
-          <% if (user) { %>
-            <li class="nav-item">
-              <a class="nav-link" href="/admin">Dashboard</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/auth/logout">Logout</a>
-            </li>
-          <% } else { %>
-            <li class="nav-item">
-              <a class="nav-link" href="/auth/login">Login</a>
-            </li>
-          <% } %>
-        </ul>
-      </div>
-    </div>
-  </nav>
+<style>
+    /* Custom CSS for cyberpunk hacker portfolio */
 
-  <!-- Hero Section -->
-  <section id="home" class="hero">
-    <div class="container">
-      <div class="row align-items-center">
-        <div class="col-lg-6 fade-in">
-          <h1><%= portfolio.headerCaption %></h1>
-          <p class="lead"><%= portfolio.shortDescription %></p>
-          <a href="#contact" class="btn btn-primary btn-lg">Get in Touch</a>
-        </div>
-      </div>
-    </div>
-  </section>
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Fira+Code:wght@300;400;500;600&display=swap");
 
-  <!-- About Section -->
-  <section id="about" class="section">
-    <div class="container">
-      <div class="section-title fade-in">
-        <h2>About Me</h2>
-        <p class="lead">Get to know me better</p>
-      </div>
-      <div class="row align-items-center">
-        <div class="col-lg-6 fade-in">
-          <img src="/images/about-image.jpg" alt="About Me" class="img-fluid rounded">
-        </div>
-        <div class="col-lg-6 fade-in">
-          <h3>Who am I?</h3>
-          <p><%= portfolio.aboutMe %></p>
-          <div class="row mt-4">
-            <div class="col-md-6">
-              <h5>Education</h5>
-              <ul class="list-unstyled">
-                <% portfolio.education.forEach(edu => { %>
-                  <li><i class="fas fa-graduation-cap me-2"></i><%= edu %></li>
-                <% }); %>
-              </ul>
-            </div>
-            <div class="col-md-6">
-              <h5>Experience</h5>
-              <ul class="list-unstyled">
-                <% portfolio.experience.forEach(exp => { %>
-                  <li><i class="fas fa-briefcase me-2"></i><%= exp %></li>
-                <% }); %>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+:root {
+  --neon-green: #00ff41;
+  --neon-cyan: #00ffff;
+  --neon-purple: #bf00ff;
+  --neon-pink: #ff0080;
+  --dark-bg: #0a0a0a;
+  --darker-bg: #050505;
+}
 
-  <!-- Skills Section -->
-  <section id="skills" class="section bg-light">
-    <div class="container">
-      <div class="section-title fade-in">
-        <h2>My Skills</h2>
-        <p class="lead">What I'm good at</p>
-      </div>
-      <div class="row">
-        <% portfolio.skills.forEach(skill => { %>
-          <div class="col-md-4 mb-4 fade-in">
-            <div class="skill-card">
-              <i class="<%= skill.icon %> skill-icon"></i>
-              <h4><%= skill.name %></h4>
-              <p><%= skill.description %></p>
-              <div class="progress">
-                <div class="progress-bar" role="progressbar" style="width: <%= skill.level %>%" 
-                     aria-valuenow="<%= skill.level %>" aria-valuemin="0" aria-valuemax="100">
-                  <%= skill.level %>%
+* {
+  font-family: "Fira Code", monospace;
+}
+
+.font-orbitron {
+  font-family: "Orbitron", monospace;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--darker-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, var(--neon-cyan), var(--neon-purple));
+  border-radius: 4px;
+}
+
+/* Intro Terminal Styles */
+.intro-terminal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.5s ease;
+}
+
+.intro-terminal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.intro-terminal {
+  width: 95%;
+  max-width: 900px;
+  background: #000000;
+  border: 2px solid var(--neon-cyan);
+  border-radius: 8px;
+  overflow: hidden;
+  transform: scale(0.8) translateY(50px);
+  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 0 0 rgba(0, 255, 255, 0);
+}
+
+.intro-terminal-overlay.active .intro-terminal {
+  transform: scale(1) translateY(0);
+  box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+}
+
+.intro-terminal-header {
+  background: #1a1a1a;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--neon-cyan);
+}
+
+.intro-terminal-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.intro-terminal-btn {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.intro-terminal-btn.red { background: #ff5f56; }
+.intro-terminal-btn.yellow { background: #ffbd2e; }
+.intro-terminal-btn.green { background: #27ca3f; }
+
+.intro-terminal-title {
+  color: var(--neon-cyan);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: "Fira Code", monospace;
+}
+
+.intro-terminal-content {
+  padding: 40px 30px;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.intro-name-container {
+  margin-bottom: 40px;
+}
+
+.intro-name {
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 900;
+  font-family: "Orbitron", monospace;
+  color: var(--neon-cyan);
+  text-transform: uppercase;
+  letter-spacing: -2px;
+  line-height: 1.1;
+  position: relative;
+  text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+.intro-name.glitch {
+  animation: intro-glitch 0.3s ease-in-out;
+}
+
+.intro-roles {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.intro-roles-title {
+  color: var(--neon-green);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s ease;
+}
+
+.intro-roles-title.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.intro-role-item {
+  color: #e5e7eb;
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 12px;
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: all 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.intro-role-item.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.intro-role-bullet {
+  color: var(--neon-purple);
+  font-weight: bold;
+}
+
+.intro-continue {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #6b7280;
+  font-size: 14px;
+  opacity: 0;
+  animation: intro-fade-in 1s ease forwards;
+  animation-delay: 4s;
+}
+
+.intro-continue.blink {
+  animation: intro-blink 1s infinite;
+}
+
+/* Intro Terminal Animations */
+@keyframes intro-glitch {
+  0%, 100% { transform: translate(0); }
+  10% { transform: translate(-2px, -2px); }
+  20% { transform: translate(2px, 2px); }
+  30% { transform: translate(-2px, 2px); }
+  40% { transform: translate(2px, -2px); }
+  50% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  70% { transform: translate(-2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  90% { transform: translate(-2px, -2px); }
+}
+
+@keyframes intro-fade-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes intro-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.3; }
+}
+
+/* Mobile Responsive for Intro Terminal */
+@media (max-width: 768px) {
+  .intro-terminal {
+    width: 98%;
+    margin: 10px;
+  }
+  
+  .intro-terminal-content {
+    padding: 30px 20px;
+    min-height: 350px;
+  }
+  
+  .intro-name {
+    font-size: clamp(2rem, 10vw, 3.5rem);
+    letter-spacing: -1px;
+  }
+  
+  .intro-roles-title {
+    font-size: 16px;
+  }
+  
+  .intro-role-item {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .intro-terminal-content {
+    padding: 25px 15px;
+    min-height: 300px;
+  }
+  
+  .intro-name {
+    font-size: clamp(1.8rem, 12vw, 3rem);
+  }
+  
+  .intro-roles-title {
+    font-size: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .intro-role-item {
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+}
+
+/* Cursor Trail */
+#cursor-trail {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--neon-cyan);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  box-shadow: 0 0 20px var(--neon-cyan);
+}
+
+/* Navigation */
+.nav-link {
+  position: relative;
+  color: #9ca3af;
+  transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+  border: 1px solid transparent;
+}
+
+.nav-link:hover {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px var(--neon-cyan);
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+.mobile-nav-link {
+  font-size: 1.5rem;
+  color: #9ca3af;
+  transition: all 0.3s ease;
+  padding: 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+}
+
+.mobile-nav-link:hover {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px var(--neon-cyan);
+  border-color: var(--neon-cyan);
+  background: rgba(0, 255, 255, 0.1);
+}
+
+/* Glitch Effect */
+.glitch-text {
+  position: relative;
+  animation: glitch 2s infinite;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch-text::before {
+  animation: glitch-1 0.5s infinite;
+  color: var(--neon-pink);
+  z-index: -1;
+}
+
+.glitch-text::after {
+  animation: glitch-2 0.5s infinite;
+  color: var(--neon-cyan);
+  z-index: -2;
+}
+
+@keyframes glitch {
+  0%,
+  100% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+}
+
+@keyframes glitch-1 {
+  0%,
+  100% {
+    transform: translate(0);
+  }
+  10% {
+    transform: translate(-2px, -2px);
+  }
+  20% {
+    transform: translate(2px, 2px);
+  }
+  30% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(2px, -2px);
+  }
+  50% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  70% {
+    transform: translate(-2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+  90% {
+    transform: translate(-2px, -2px);
+  }
+}
+
+@keyframes glitch-2 {
+  0%,
+  100% {
+    transform: translate(0);
+  }
+  10% {
+    transform: translate(2px, 2px);
+  }
+  20% {
+    transform: translate(-2px, -2px);
+  }
+  30% {
+    transform: translate(2px, -2px);
+  }
+  40% {
+    transform: translate(-2px, 2px);
+  }
+  50% {
+    transform: translate(2px, 2px);
+  }
+  60% {
+    transform: translate(-2px, -2px);
+  }
+  70% {
+    transform: translate(2px, -2px);
+  }
+  80% {
+    transform: translate(-2px, 2px);
+  }
+  90% {
+    transform: translate(2px, 2px);
+  }
+}
+
+/* Modern Logo Text Effect */
+.modern-logo-text {
+  display: inline-block;
+  font-size: 0.6em;
+  font-weight: 400;
+  color: #e5e7eb;
+  text-transform: none;
+  letter-spacing: 2px;
+  position: relative;
+  margin-bottom: 0.5rem;
+  animation: subtle-pulse 3s ease-in-out infinite;
+}
+
+.modern-logo-text::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+  animation: underline-expand 2s ease-out forwards;
+  box-shadow: 0 0 10px var(--neon-cyan);
+}
+
+.modern-logo-name {
+  display: inline-block;
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    var(--neon-cyan) 25%,
+    var(--neon-purple) 50%,
+    var(--neon-pink) 75%,
+    #ffffff 100%
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-flow 4s ease-in-out infinite, logo-glow 2s ease-in-out infinite alternate;
+  text-shadow: none;
+  position: relative;
+  font-weight: 900;
+  letter-spacing: -2px;
+}
+
+.modern-logo-name::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(0, 255, 255, 0.1) 25%,
+    rgba(191, 0, 255, 0.1) 50%,
+    rgba(255, 0, 128, 0.1) 75%,
+    transparent 100%
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-flow 4s ease-in-out infinite reverse;
+  z-index: -1;
+}
+
+/* Modern Logo Animations */
+@keyframes subtle-pulse {
+  0%,
+  100% {
+    opacity: 0.8;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes underline-expand {
+  0% {
+    width: 0;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    width: 100%;
+    opacity: 0.8;
+  }
+}
+
+@keyframes gradient-flow {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 200% 50%;
+  }
+  75% {
+    background-position: 100% 100%;
+  }
+}
+
+@keyframes logo-glow {
+  0% {
+    filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.3));
+  }
+  100% {
+    filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.6)) drop-shadow(0 0 30px rgba(191, 0, 255, 0.4));
+  }
+}
+
+/* Enhanced glitch effect for the name */
+.modern-logo-name.glitch-text::before {
+  animation: glitch-1 0.5s infinite, gradient-flow 4s ease-in-out infinite reverse;
+  background: linear-gradient(135deg, #ff0080, transparent, #ff0080);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  opacity: 0.7;
+}
+
+.modern-logo-name.glitch-text::after {
+  animation: glitch-2 0.5s infinite, gradient-flow 4s ease-in-out infinite;
+  background: linear-gradient(135deg, #00ffff, transparent, #00ffff);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  opacity: 0.7;
+}
+
+/* Responsive adjustments for modern logo */
+@media (max-width: 768px) {
+  .modern-logo-text {
+    font-size: 0.7em;
+    letter-spacing: 1px;
+  }
+
+  .modern-logo-name {
+    letter-spacing: -1px;
+  }
+
+  .modern-logo-name.glitch-text::before,
+  .modern-logo-name.glitch-text::after {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .modern-logo-text {
+    font-size: 0.8em;
+    margin-bottom: 0.25rem;
+  }
+
+  .modern-logo-name {
+    letter-spacing: 0;
+  }
+}
+
+/* Typing Effect */
+.cursor-blink {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Buttons */
+.cyber-btn {
+  position: relative;
+  padding: 0.75rem 2rem;
+  background: transparent;
+  border: 2px solid;
+  color: inherit;
+  font-family: "Fira Code", monospace;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.cyber-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.cyber-btn:hover::before {
+  left: 100%;
+}
+
+.cyber-btn.primary {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+
+.cyber-btn.primary:hover {
+  background: rgba(0, 255, 255, 0.1);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+  text-shadow: 0 0 10px var(--neon-cyan);
+}
+
+.cyber-btn.secondary {
+  border-color: var(--neon-purple);
+  color: var(--neon-purple);
+}
+
+.cyber-btn.secondary:hover {
+  background: rgba(191, 0, 255, 0.1);
+  box-shadow: 0 0 30px rgba(191, 0, 255, 0.5);
+  text-shadow: 0 0 10px var(--neon-purple);
+}
+
+/* Section Titles */
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 900;
+  font-family: "Orbitron", monospace;
+  text-transform: uppercase;
+  background: linear-gradient(45deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink));
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 3s ease infinite;
+}
+
+.section-line {
+  width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+  margin: 1rem auto;
+  position: relative;
+}
+
+.section-line::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+  filter: blur(2px);
+  opacity: 0.7;
+}
+
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Cards */
+.cyber-card {
+  background: rgba(10, 10, 10, 0.8);
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  border-radius: 0.5rem;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.cyber-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+  animation: scan-line 2s linear infinite;
+}
+
+.cyber-card:hover {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+  transform: translateY(-5px);
+}
+
+@keyframes scan-line {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Avatar */
+.avatar-container {
+  display: flex;
+  justify-content: center;
+}
+
+.avatar-frame {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border: 2px solid var(--neon-cyan);
+  border-radius: 50%;
+  padding: 4px;
+  background: linear-gradient(45deg, var(--neon-cyan), var(--neon-purple));
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  filter: grayscale(100%) contrast(120%);
+  transition: filter 0.3s ease;
+}
+
+.avatar-frame:hover .avatar-img {
+  filter: grayscale(0%) contrast(100%);
+}
+
+/* .avatar-scan {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.3), transparent);
+  animation: avatar-scan 3s ease-in-out infinite;
+} */
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes avatar-scan {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+/* Skill Tags */
+.skill-tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: rgba(0, 255, 255, 0.1);
+  border: 1px solid var(--neon-cyan);
+  border-radius: 1rem;
+  color: var(--neon-cyan);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Terminal Window */
+.terminal-window {
+  background: #000;
+  border: 1px solid var(--neon-green);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+}
+
+.terminal-header {
+  background: #1a1a1a;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--neon-green);
+}
+
+.terminal-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.terminal-btn {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.terminal-btn.red {
+  background: #ff5f56;
+}
+.terminal-btn.yellow {
+  background: #ffbd2e;
+}
+.terminal-btn.green {
+  background: #27ca3f;
+}
+
+.terminal-title {
+  color: var(--neon-green);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.terminal-content {
+  padding: 1rem;
+  color: var(--neon-green);
+  font-family: "Fira Code", monospace;
+}
+
+/* Project Cards */
+.project-card {
+  background: rgba(10, 10, 10, 0.9);
+  border: 1px solid rgba(191, 0, 255, 0.3);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.project-card:hover {
+  border-color: var(--neon-purple);
+  box-shadow: 0 0 30px rgba(191, 0, 255, 0.3);
+  transform: translateY(-10px);
+}
+
+.project-image {
+  position: relative;
+  overflow: hidden;
+  height: 200px;
+}
+
+.project-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%) contrast(120%);
+  transition: all 0.3s ease;
+}
+
+.project-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.project-card:hover .project-overlay {
+  opacity: 1;
+}
+
+.project-card:hover .project-image img {
+  filter: grayscale(0%) contrast(100%);
+  transform: scale(1.1);
+}
+
+.project-btn {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid var(--neon-purple);
+  color: var(--neon-purple);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.project-btn:hover {
+  background: rgba(191, 0, 255, 0.2);
+  box-shadow: 0 0 20px rgba(191, 0, 255, 0.5);
+}
+
+.project-content {
+  padding: 1.5rem;
+}
+
+.project-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--neon-purple);
+  margin-bottom: 0.5rem;
+  font-family: "Orbitron", monospace;
+}
+
+.project-description {
+  color: #9ca3af;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.project-tag {
+  padding: 0.25rem 0.5rem;
+  background: rgba(191, 0, 255, 0.1);
+  border: 1px solid var(--neon-purple);
+  border-radius: 0.25rem;
+  color: var(--neon-purple);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Skills */
+.skill-category {
+  background: rgba(10, 10, 10, 0.8);
+  border: 1px solid rgba(0, 255, 65, 0.3);
+  border-radius: 0.5rem;
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.skill-category:hover {
+  border-color: var(--neon-green);
+  box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
+}
+
+.skill-category-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--neon-green);
+  font-family: "Orbitron", monospace;
+}
+
+.skill-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.skill-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.25rem;
+  transition: all 0.3s ease;
+}
+
+.skill-item:hover {
+  border-color: var(--neon-green);
+  background: rgba(0, 255, 65, 0.1);
+  transform: translateX(5px);
+}
+
+.skill-item i {
+  font-size: 1.5rem;
+}
+
+.skill-item span {
+  color: #e5e7eb;
+  font-weight: 500;
+}
+
+/* Blog Cards */
+.blog-card {
+  background: rgba(10, 10, 10, 0.9);
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  border-radius: 0.5rem;
+  padding: 2rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.blog-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+  transition: left 0.5s ease;
+}
+
+.blog-card:hover::before {
+  left: 100%;
+}
+
+.blog-card:hover {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+  transform: translateY(-5px);
+}
+
+.blog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.blog-date {
+  color: var(--neon-cyan);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.blog-category {
+  padding: 0.25rem 0.5rem;
+  background: rgba(0, 255, 255, 0.1);
+  border: 1px solid var(--neon-cyan);
+  border-radius: 0.25rem;
+  color: var(--neon-cyan);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.blog-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #e5e7eb;
+  margin-bottom: 1rem;
+  font-family: "Orbitron", monospace;
+}
+
+.blog-excerpt {
+  color: #9ca3af;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.blog-link {
+  color: var(--neon-cyan);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.blog-link:hover {
+  text-shadow: 0 0 10px var(--neon-cyan);
+}
+
+/* Terminal Container */
+.terminal-container {
+  background: #000;
+  border: 2px solid var(--neon-green);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(0, 255, 65, 0.3);
+}
+
+.terminal-body {
+  padding: 2rem;
+  min-height: 400px;
+}
+
+/* Scan Status */
+.scan-status {
+  margin-bottom: 2rem;
+}
+
+.scan-line {
+  margin-bottom: 0.5rem;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.scan-line:nth-child(1) {
+  animation-delay: 0.5s;
+}
+.scan-line:nth-child(2) {
+  animation-delay: 1s;
+}
+.scan-line:nth-child(3) {
+  animation-delay: 1.5s;
+}
+
+.scan-progress {
+  margin-top: 1rem;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+  animation-delay: 2s;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: #333;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan));
+  width: 0%;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 10px var(--neon-green);
+}
+
+.progress-text {
+  color: var(--neon-green);
+  font-size: 0.875rem;
+}
+
+/* Visitor Data */
+.visitor-data {
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.data-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.data-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: rgba(0, 255, 65, 0.05);
+  border: 1px solid rgba(0, 255, 65, 0.2);
+  border-radius: 0.25rem;
+  transition: all 0.3s ease;
+}
+
+.data-item:hover {
+  border-color: var(--neon-green);
+  background: rgba(0, 255, 65, 0.1);
+}
+
+.data-label {
+  color: var(--neon-cyan);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+}
+
+.data-value {
+  color: var(--neon-green);
+  font-weight: 600;
+  text-align: right;
+}
+
+.terminal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.terminal-disclaimer {
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid #374151;
+}
+
+/* Social Links */
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  color: #9ca3af;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.social-link:hover {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .data-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .skill-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .terminal-actions {
+    flex-direction: column;
+  }
+
+  .glitch-text::before,
+  .glitch-text::after {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .cyber-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .avatar-frame {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+</style>
+<body class="bg-black text-green-400 font-mono overflow-x-hidden">
+    <!-- Intro Terminal Overlay -->
+    <div id="intro-terminal-overlay" class="intro-terminal-overlay">
+        <div class="intro-terminal">
+            <div class="intro-terminal-header">
+                <div class="intro-terminal-buttons">
+                    <div class="intro-terminal-btn red"></div>
+                    <div class="intro-terminal-btn yellow"></div>
+                    <div class="intro-terminal-btn green"></div>
                 </div>
-              </div>
+                <span class="intro-terminal-title">system_init.exe</span>
             </div>
-          </div>
-        <% }); %>
-      </div>
-    </div>
-  </section>
-
-  <!-- Projects Section -->
-  <section id="projects" class="section">
-    <div class="container">
-      <div class="section-title fade-in">
-        <h2>My Projects</h2>
-        <p class="lead">What I've worked on</p>
-      </div>
-      <div class="row">
-        <% portfolio.projects.forEach(project => { %>
-          <div class="col-md-6 col-lg-4 mb-4 fade-in">
-            <div class="project-card">
-              <img src="<%= project.image %>" alt="<%= project.title %>" class="img-fluid">
-              <div class="project-overlay">
-                <div class="text-center">
-                  <h4><%= project.title %></h4>
-                  <p><%= project.description %></p>
-                  <a href="<%= project.link %>" class="btn btn-light" target="_blank">View Project</a>
+            <div class="intro-terminal-content">
+                <div class="intro-name-container">
+                    <div id="intro-name" class="intro-name"></div>
                 </div>
-              </div>
-            </div>
-          </div>
-        <% }); %>
-      </div>
-    </div>
-  </section>
-
-  <!-- Blog Section -->
-  <section id="blog" class="section bg-light">
-    <div class="container">
-      <div class="section-title fade-in">
-        <h2>Latest Blog Posts</h2>
-        <p class="lead">What I'm writing about</p>
-      </div>
-      <div class="row">
-        <% if (portfolio.blogPosts && portfolio.blogPosts.length > 0) { %>
-          <% portfolio.blogPosts.forEach(post => { %>
-            <div class="col-md-6 mb-4 fade-in">
-              <div class="card blog-card">
-                <div class="card-body">
-                  <h5 class="card-title"><%= post.title %></h5>
-                  <p class="card-text text-muted">
-                    <small><%= new Date(post.pubDate).toLocaleDateString() %></small>
-                  </p>
-                  <p class="card-text"><%= post.description.substring(0, 150) %>...</p>
-                  <a href="<%= post.link %>" class="btn btn-primary" target="_blank">Read More</a>
+                <div class="intro-roles">
+                    <div id="intro-roles-title" class="intro-roles-title">SYSTEM ROLES:</div>
+                    <div id="intro-role-1" class="intro-role-item">
+                        <span class="intro-role-bullet">•</span>
+                        <span>Penetration Tester</span>
+                    </div>
+                    <div id="intro-role-2" class="intro-role-item">
+                        <span class="intro-role-bullet">•</span>
+                        <span>Computer Engineer</span>
+                    </div>
+                    <div id="intro-role-3" class="intro-role-item">
+                        <span class="intro-role-bullet">•</span>
+                        <span>Incident Investigator</span>
+                    </div>
+                    <div id="intro-role-4" class="intro-role-item">
+                        <span class="intro-role-bullet">•</span>
+                        <span>Cybersecurity Researcher</span>
+                    </div>
                 </div>
+                <div id="intro-continue" class="intro-continue">
+                    Press any key to continue...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Matrix Background -->
+    <canvas id="matrix-bg" class="fixed inset-0 z-0 opacity-10"></canvas>
+    
+    <!-- Cursor Trail -->
+    <div id="cursor-trail"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-cyan-500/30">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full animate-pulse"></div>
+                    <h1 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400 font-orbitron">
+                        CYBERDEV.EXE
+                    </h1>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#about" class="nav-link">ABOUT</a>
+                    <a href="#projects" class="nav-link">PROJECTS</a>
+                    <a href="#skills" class="nav-link">SKILLS</a>
+                    <a href="#blog" class="nav-link">BLOG</a>
+                    <a href="#terminal" class="nav-link">TERMINAL</a>
+                </div>
+                <button id="mobile-menu" class="md:hidden text-cyan-400">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-nav" class="fixed inset-0 z-40 bg-black/95 backdrop-blur-md hidden">
+        <div class="flex flex-col items-center justify-center h-full space-y-8">
+            <a href="#about" class="mobile-nav-link">ABOUT</a>
+            <a href="#projects" class="mobile-nav-link">PROJECTS</a>
+            <a href="#skills" class="mobile-nav-link">SKILLS</a>
+            <a href="#blog" class="mobile-nav-link">BLOG</a>
+            <a href="#terminal" class="mobile-nav-link">TERMINAL</a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center pt-20">
+        <div class="container mx-auto px-4 text-center">
+            <div class="hero-content">
+                <h1 class="text-4xl md:text-7xl font-bold mb-6 font-orbitron">
+  <!-- <span class="modern-logo-text">Hi, I'm</span> -->
+  <br>
+  <span class="modern-logo-name glitch-text" data-text="DEEPAK SIVAN">DEEPAK SIVAN</span>
+</h1>
+                <div class="typing-container mb-8">
+                    <span class="text-xl md:text-2xl text-gray-300">></span>
+                    <span id="typing-text" class="text-xl md:text-2xl text-cyan-400 ml-2"></span>
+                    <span class="cursor-blink">|</span>
+                </div>
+                <p class="text-lg md:text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
+                    Penetrating digital barriers • Crafting secure solutions • Exploring the cyber frontier
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button class="cyber-btn primary">
+                        <i class="fas fa-terminal mr-2"></i>
+                        INITIALIZE_CONTACT
+                    </button>
+                    <button class="cyber-btn secondary">
+                        <i class="fas fa-download mr-2"></i>
+                        DOWNLOAD_RESUME
+                    </button>
+                    <button class="cyber-btn primary">
+                      <i class="fas fa-download mr-2"></i>
+                      LEARN_CYBERSECURITY
+                  </button>
               </div>
+                </div>
             </div>
-          <% }); %>
-        <% } else { %>
-          <div class="col-12 text-center">
-            <p>No blog posts available at the moment.</p>
-          </div>
-        <% } %>
-      </div>
-    </div>
-  </section>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <div class="w-6 h-10 border-2 border-cyan-400 rounded-full flex justify-center">
+                <div class="w-1 h-3 bg-cyan-400 rounded-full mt-2 animate-pulse"></div>
+            </div>
+        </div>
+    </section>
 
-  <!-- Contact Section -->
-  <section id="contact" class="section">
-    <div class="container">
-      <div class="section-title fade-in">
-        <h2>Get in Touch</h2>
-        <p class="lead">Let's work together</p>
-      </div>
-      <div class="row">
-        <div class="col-lg-6 fade-in">
-          <form class="contact-form" id="contactForm">
-            <div class="mb-3">
-              <input type="text" class="form-control" name="name" placeholder="Your Name" required>
+    <!-- About Section -->
+    <section id="about" class="py-20 relative">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="section-title">ABOUT_PROTOCOL</h2>
+                <div class="section-line"></div>
             </div>
-            <div class="mb-3">
-              <input type="email" class="form-control" name="email" placeholder="Your Email" required>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="order-2 lg:order-1">
+                    <div class="cyber-card">
+                        <div class="avatar-container mb-6">
+                            <div class="avatar-frame">
+                                <img src="/images/gif/Marix.gif" alt="Avatar" class="avatar-img">
+                                <div class="avatar-scan"></div>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-bold text-cyan-400 mb-4 font-orbitron">IDENTITY_CONFIRMED</h3>
+                        <p class="text-gray-300 leading-relaxed mb-6">
+                            A digital architect navigating the intersection of cybersecurity and development. 
+                            Specializing in penetration testing, secure coding practices, and building resilient systems 
+                            that withstand the chaos of the digital frontier.
+                        </p>
+                        <p class="text-gray-300 leading-relaxed mb-6">
+                            When not hunting vulnerabilities or crafting code, I explore the depths of ethical hacking, 
+                            contribute to open-source security tools, and share knowledge through technical writing.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <span class="skill-tag">Ethical Hacker</span>
+                            <span class="skill-tag">Full-Stack Dev</span>
+                            <span class="skill-tag">Security Researcher</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="order-1 lg:order-2">
+                    <div class="cyber-card">
+                        <h3 class="text-xl font-bold text-purple-400 mb-4 font-orbitron">TRYHACKME_NODE</h3>
+                        <div class="terminal-window">
+                            <div class="terminal-header">
+                                <div class="terminal-buttons">
+                                    <div class="terminal-btn red"></div>
+                                    <div class="terminal-btn yellow"></div>
+                                    <div class="terminal-btn green"></div>
+                                </div>
+                                <span class="terminal-title">secure_connection.exe</span>
+                            </div>
+                            <div class="terminal-content">
+                                <div class="text-green-400 mb-2">$ connecting to tryhackme.com...</div>
+                                <div class="text-cyan-400 mb-4">$ authentication successful</div>
+                                <div class="flex justify-center">
+                                    <iframe src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=3979148" 
+                                            style="border: none; width: 100%; height: 200px;" 
+                                            class="rounded-lg"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="mb-3">
-              <input type="text" class="form-control" name="subject" placeholder="Subject" required>
-            </div>
-            <div class="mb-3">
-              <textarea class="form-control" name="message" rows="5" placeholder="Your Message" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Send Message</button>
-          </form>
         </div>
-        <div class="col-lg-6 fade-in">
-          <div class="contact-info">
-            <h4>Contact Information</h4>
-            <ul class="list-unstyled">
-              <li><i class="fas fa-envelope me-2"></i><%= portfolio.contact.email %></li>
-              <li><i class="fas fa-phone me-2"></i><%= portfolio.contact.phone %></li>
-              <li><i class="fas fa-map-marker-alt me-2"></i><%= portfolio.contact.location %></li>
-            </ul>
-            <div class="social-links mt-4">
-              <% Object.entries(portfolio.social).forEach(([platform, link]) => { %>
-                <a href="<%= link %>" class="me-3" target="_blank">
-                  <i class="fab fa-<%= platform %> fa-2x"></i>
-                </a>
-              <% }); %>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-6">
-          <h5>About Me</h5>
-          <p><%= portfolio.footerDescription %></p>
-        </div>
-        <div class="col-md-3">
-          <h5>Quick Links</h5>
-          <ul class="footer-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#blog">Blog</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-        </div>
-        <div class="col-md-3">
-          <h5>Connect</h5>
-          <ul class="footer-links">
-            <% Object.entries(portfolio.social).forEach(([platform, link]) => { %>
-              <li>
-                <a href="<%= link %>" target="_blank">
-                  <i class="fab fa-<%= platform %> me-2"></i><%= platform.charAt(0).toUpperCase() + platform.slice(1) %>
-                </a>
-              </li>
-            <% }); %>
-          </ul>
-        </div>
-      </div>
-      <hr>
-      <div class="text-center">
-        <p>&copy; <%= new Date().getFullYear() %> <%= portfolio.name %>. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 relative">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="section-title">PROJECT_ARCHIVE</h2>
+                <div class="section-line"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="project-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="project-image">
+                        <img src="/placeholder.svg?height=200&width=300" alt="Project 1">
+                        <div class="project-overlay">
+                            <button class="project-btn">VIEW_CODE</button>
+                            <button class="project-btn">LIVE_DEMO</button>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">VULNERABILITY_SCANNER</h3>
+                        <p class="project-description">
+                            Advanced network vulnerability assessment tool with automated reporting and remediation suggestions.
+                        </p>
+                        <div class="project-tags">
+                            <span class="project-tag">Python</span>
+                            <span class="project-tag">Nmap</span>
+                            <span class="project-tag">Security</span>
+                        </div>
+                    </div>
+                </div>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Custom JS -->
-  <script src="/js/main.js"></script>
-  <script>
-    // Handle contact form submission
-    document.getElementById('contactForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      try {
-        await window.utils.handleFormSubmit(e.target, '/api/contact');
-      } catch (error) {
-        console.error('Error sending message:', error);
+                <div class="project-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="project-image">
+                        <img src="/placeholder.svg?height=200&width=300" alt="Project 2">
+                        <div class="project-overlay">
+                            <button class="project-btn">VIEW_CODE</button>
+                            <button class="project-btn">LIVE_DEMO</button>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">SECURE_CHAT_APP</h3>
+                        <p class="project-description">
+                            End-to-end encrypted messaging platform with perfect forward secrecy and zero-knowledge architecture.
+                        </p>
+                        <div class="project-tags">
+                            <span class="project-tag">Node.js</span>
+                            <span class="project-tag">WebRTC</span>
+                            <span class="project-tag">Cryptography</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="project-image">
+                        <img src="/placeholder.svg?height=200&width=300" alt="Project 3">
+                        <div class="project-overlay">
+                            <button class="project-btn">VIEW_CODE</button>
+                            <button class="project-btn">LIVE_DEMO</button>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">HONEYPOT_NETWORK</h3>
+                        <p class="project-description">
+                            Distributed honeypot system for threat intelligence gathering and attack pattern analysis.
+                        </p>
+                        <div class="project-tags">
+                            <span class="project-tag">Docker</span>
+                            <span class="project-tag">ELK Stack</span>
+                            <span class="project-tag">Threat Intel</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 relative">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="section-title">SKILL_MATRIX</h2>
+                <div class="section-line"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="skill-category">
+                    <h3 class="skill-category-title">
+                        <i class="fas fa-code text-purple-400 mr-2"></i>
+                        PROGRAMMING
+                    </h3>
+                    <div class="skill-grid">
+                        <div class="skill-item">
+                            <i class="fab fa-python text-yellow-400"></i>
+                            <span>Python</span>
+                        </div>
+                        <div class="skill-item">
+                            <i class="fab fa-js-square text-yellow-300"></i>
+                            <span>JavaScript</span>
+                        </div>
+                        <div class="skill-item">
+                            <i class="fab fa-rust text-orange-400"></i>
+                            <span>Rust</span>
+                        </div>
+                        <div class="skill-item">
+                            <i class="fas fa-terminal text-green-400"></i>
+                            <span>Bash</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3 class="skill-category-title">
+                        <i class="fas fa-shield-alt text-cyan-400 mr-2"></i>
+                        SECURITY_TOOLS
+                    </h3>
+                    <div class="skill-grid">
+                        <div class="skill-item">
+                            <i class="fas fa-search text-red-400"></i>
+                            <span>Nmap</span>
+                        </div>
+                        <div class="skill-item">
+                            <i class="fas fa-bug text-purple-400"></i>
+                            <span>Burp Suite</span>
+                        </div>
+                        <div class="skill-item">
+                            <i class="fas fa-network-wired text-blue-400"></i>
+                            <span>Wireshark</span>
+                        </div>
+                        <div class="skill-item">
+                            <i class="fas fa-key text-yellow-400"></i>
+                            <span>Metasploit</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3 class="skill-category-title">
+                        <i class="fas fa-server text-green-400 mr-2"></i>
+                        INFRASTRUCTURE
+                    </h3>
+                    <div class="skill-grid">
+                        <div class="skill-item">
+                            <i class="fab fa-linux text-yellow-300"></i>
+                            <span>Linux</span>
+                        </div>
+                        <div class="skill-item">
+                            <i class="fab fa-docker text-blue-400"></i>
+                            <span>Docker</span>
+                        </div>
+                        <div class="skill-item">
+                            <i class="fab fa-aws text-orange-400"></i>
+                            <span>AWS</span>
+                        </div>
+                        <div class="skill-item">
+                            <i class="fas fa-database text-cyan-400"></i>
+                            <span>PostgreSQL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section id="blog" class="py-20 relative">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="section-title">BLOG_FEED</h2>
+                <div class="section-line"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <article class="blog-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="blog-header">
+                        <div class="blog-date">2024.01.15</div>
+                        <div class="blog-category">SECURITY</div>
+                    </div>
+                    <h3 class="blog-title">Advanced SQL Injection Techniques</h3>
+                    <p class="blog-excerpt">
+                        Exploring modern SQL injection vectors and defense mechanisms in contemporary web applications...
+                    </p>
+                    <a href="#" class="blog-link">
+                        READ_MORE <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </article>
+
+                <article class="blog-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="blog-header">
+                        <div class="blog-date">2024.01.08</div>
+                        <div class="blog-category">DEVELOPMENT</div>
+                    </div>
+                    <h3 class="blog-title">Building Secure APIs with Node.js</h3>
+                    <p class="blog-excerpt">
+                        Best practices for implementing authentication, authorization, and input validation in REST APIs...
+                    </p>
+                    <a href="#" class="blog-link">
+                        READ_MORE <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </article>
+
+                <article class="blog-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="blog-header">
+                        <div class="blog-date">2023.12.28</div>
+                        <div class="blog-category">TUTORIAL</div>
+                    </div>
+                    <h3 class="blog-title">Setting Up a Home Lab for Pentesting</h3>
+                    <p class="blog-excerpt">
+                        Complete guide to creating a virtualized environment for practicing ethical hacking techniques...
+                    </p>
+                    <a href="#" class="blog-link">
+                        READ_MORE <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Terminal Section -->
+    <section id="terminal" class="py-20 relative">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="section-title">VISITOR_TERMINAL</h2>
+                <div class="section-line"></div>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="terminal-container">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons">
+                            <div class="terminal-btn red"></div>
+                            <div class="terminal-btn yellow"></div>
+                            <div class="terminal-btn green"></div>
+                        </div>
+                        <span class="terminal-title">visitor_scan.exe</span>
+                    </div>
+                    <div class="terminal-body">
+                        <div id="scan-status" class="scan-status">
+                            <div class="scan-line">
+                                <span class="text-cyan-400">></span> Initializing visitor scan protocol...
+                            </div>
+                            <div class="scan-line">
+                                <span class="text-green-400">></span> Establishing secure connection...
+                            </div>
+                            <div class="scan-line">
+                                <span class="text-purple-400">></span> Gathering system information...
+                            </div>
+                            <div class="scan-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill"></div>
+                                </div>
+                                <span class="progress-text">Scanning... <span id="progress-percent">0</span>%</span>
+                            </div>
+                        </div>
+                        
+                        <div id="visitor-data" class="visitor-data hidden">
+                            <div class="data-grid">
+                                <div class="data-item">
+                                    <span class="data-label">IP_ADDRESS:</span>
+                                    <span class="data-value" id="ip-address">---.---.---.---</span>
+                                </div>
+                                <div class="data-item">
+                                    <span class="data-label">LOCATION:</span>
+                                    <span class="data-value" id="location">Unknown, Unknown</span>
+                                </div>
+                                <div class="data-item">
+                                    <span class="data-label">BROWSER:</span>
+                                    <span class="data-value" id="browser">Unknown Browser</span>
+                                </div>
+                                <div class="data-item">
+                                    <span class="data-label">OS_SYSTEM:</span>
+                                    <span class="data-value" id="os-system">Unknown OS</span>
+                                </div>
+                                <div class="data-item">
+                                    <span class="data-label">SCREEN_RES:</span>
+                                    <span class="data-value" id="screen-res">0x0</span>
+                                </div>
+                                <div class="data-item">
+                                    <span class="data-label">TIMEZONE:</span>
+                                    <span class="data-value" id="timezone">UTC+0</span>
+                                </div>
+                                <div class="data-item">
+                                    <span class="data-label">BATTERY:</span>
+                                    <span class="data-value" id="battery">Unknown</span>
+                                </div>
+                                <div class="data-item">
+                                    <span class="data-label">CONNECTION:</span>
+                                    <span class="data-value" id="connection">Unknown</span>
+                                </div>
+                                <div class="data-item">
+                                    <span class="data-label">REFERRER:</span>
+                                    <span class="data-value" id="referrer">Direct Access</span>
+                                </div>
+                            </div>
+                            
+                            <div class="terminal-actions">
+                                <button id="export-data" class="cyber-btn secondary">
+                                    <i class="fas fa-download mr-2"></i>
+                                    EXPORT_REPORT
+                                </button>
+                                <button id="rescan" class="cyber-btn primary">
+                                    <i class="fas fa-redo mr-2"></i>
+                                    RESCAN_TARGET
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="terminal-disclaimer">
+                            <i class="fas fa-info-circle text-yellow-400 mr-2"></i>
+                            All data shown is publicly accessible and not stored. This terminal is for educational and entertainment purposes only.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-cyan-500/30">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="mb-6 md:mb-0">
+                    <h3 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400 font-orbitron">
+                        CYBERDEV.EXE
+                    </h3>
+                    <p class="text-gray-400 text-sm mt-2">Securing the digital frontier, one line of code at a time.</p>
+                </div>
+                
+                <div class="flex items-center space-x-6">
+                    <a href="#" class="social-link" data-tooltip="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="social-link" data-tooltip="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" class="social-link" data-tooltip="TryHackMe">
+                        <i class="fas fa-flag"></i>
+                    </a>
+                    <a href="#" class="social-link" data-tooltip="Medium">
+                        <i class="fab fa-medium"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="text-center mt-8 pt-8 border-t border-gray-800">
+                <p class="text-gray-500 text-sm">
+                    © 2024 CyberDev Portfolio. All rights reserved. | Built with 💚 and lots of ☕
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Enhanced Home page JavaScript functionality with Intro Terminal
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Initialize intro terminal first
+  initIntroTerminal()
+  
+  // Initialize all other features after intro
+  setTimeout(() => {
+    initMatrixBackground()
+    initCursorTrail()
+    initTypingEffect()
+    initLogoAnimation()
+    initMobileMenu()
+    initSmoothScroll()
+    initVisitorTerminal()
+    initScrollAnimations()
+    addHoverEffects()
+    addSoundEffects()
+  }, 100)
+})
+
+// Intro Terminal functionality
+function initIntroTerminal() {
+  const overlay = document.getElementById('intro-terminal-overlay')
+  const nameElement = document.getElementById('intro-name')
+  const rolesTitle = document.getElementById('intro-roles-title')
+  const roleElements = [
+    document.getElementById('intro-role-1'),
+    document.getElementById('intro-role-2'),
+    document.getElementById('intro-role-3'),
+    document.getElementById('intro-role-4')
+  ]
+  const continueElement = document.getElementById('intro-continue')
+  
+  const fullName = "Hi, I'm Deepak Sivan"
+  let nameIndex = 0
+  let isTypingComplete = false
+  
+  // Audio context for typing sounds
+  let audioContext
+  
+  function initAudio() {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)()
+    }
+  }
+  
+  function playTypingSound() {
+    if (!audioContext) return
+    
+    const oscillator = audioContext.createOscillator()
+    const gainNode = audioContext.createGain()
+    
+    oscillator.connect(gainNode)
+    gainNode.connect(audioContext.destination)
+    
+    // Randomize frequency for more realistic typing sound
+    oscillator.frequency.value = 800 + Math.random() * 200
+    oscillator.type = 'square'
+    
+    gainNode.gain.setValueAtTime(0.05, audioContext.currentTime)
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1)
+    
+    oscillator.start(audioContext.currentTime)
+    oscillator.stop(audioContext.currentTime + 0.1)
+  }
+  
+  function typewriterEffect() {
+    if (nameIndex < fullName.length) {
+      nameElement.textContent = fullName.substring(0, nameIndex + 1)
+      
+      // Play typing sound
+      playTypingSound()
+      
+      // Add glitch effect occasionally
+      if (Math.random() < 0.1) {
+        nameElement.classList.add('glitch')
+        setTimeout(() => nameElement.classList.remove('glitch'), 100)
       }
-    });
-  </script>
+      
+      nameIndex++
+      
+      // Variable typing speed for more realistic effect
+      const typingSpeed = Math.random() * 100 + 50
+      setTimeout(typewriterEffect, typingSpeed)
+    } else {
+      isTypingComplete = true
+      showRoles()
+    }
+  }
+  
+  function showRoles() {
+    // Show roles title first
+    setTimeout(() => {
+      rolesTitle.classList.add('visible')
+    }, 500)
+    
+    // Show each role with staggered animation
+    roleElements.forEach((role, index) => {
+      setTimeout(() => {
+        role.classList.add('visible')
+      }, 1000 + (index * 300))
+    })
+    
+    // Show continue message
+    setTimeout(() => {
+      continueElement.classList.add('blink')
+    }, 2500)
+  }
+  
+  function closeIntroTerminal() {
+    overlay.classList.remove('active')
+    setTimeout(() => {
+      overlay.style.display = 'none'
+    }, 500)
+  }
+  
+  // Show intro terminal
+  setTimeout(() => {
+    overlay.classList.add('active')
+    initAudio()
+    
+    // Start typewriter effect after terminal animation
+    setTimeout(() => {
+      typewriterEffect()
+    }, 800)
+  }, 500)
+  
+  // Close terminal on any key press or click
+  function handleClose() {
+    if (isTypingComplete) {
+      closeIntroTerminal()
+      document.removeEventListener('keydown', handleClose)
+      document.removeEventListener('click', handleClose)
+    }
+  }
+  
+  document.addEventListener('keydown', handleClose)
+  document.addEventListener('click', handleClose)
+  
+  // Auto close after 8 seconds if user doesn't interact
+  setTimeout(() => {
+    if (overlay.classList.contains('active')) {
+      closeIntroTerminal()
+    }
+  }, 8000)
+}
+
+// Matrix background effect
+function initMatrixBackground() {
+  const canvas = document.getElementById("matrix-bg")
+  const ctx = canvas.getContext("2d")
+
+  canvas.width = window.innerWidth
+  canvas.height = window.innerHeight
+
+  const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%+-/~{[|`]}"
+  const matrixArray = matrix.split("")
+
+  const fontSize = 10
+  const columns = canvas.width / fontSize
+
+  const drops = []
+  for (let x = 0; x < columns; x++) {
+    drops[x] = 1
+  }
+
+  function drawMatrix() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.04)"
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    ctx.fillStyle = "#00ff41"
+    ctx.font = fontSize + "px monospace"
+
+    for (let i = 0; i < drops.length; i++) {
+      const text = matrixArray[Math.floor(Math.random() * matrixArray.length)]
+      ctx.fillText(text, i * fontSize, drops[i] * fontSize)
+
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0
+      }
+      drops[i]++
+    }
+  }
+
+  setInterval(drawMatrix, 35)
+
+  // Resize canvas on window resize
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+  })
+}
+
+// Cursor trail effect
+function initCursorTrail() {
+  const trail = document.getElementById("cursor-trail")
+  let mouseX = 0
+  let mouseY = 0
+  let trailX = 0
+  let trailY = 0
+
+  document.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX
+    mouseY = e.clientY
+    trail.style.opacity = "1"
+  })
+
+  document.addEventListener("mouseleave", () => {
+    trail.style.opacity = "0"
+  })
+
+  function animateTrail() {
+    trailX += (mouseX - trailX) * 0.1
+    trailY += (mouseY - trailY) * 0.1
+
+    trail.style.left = trailX - 10 + "px"
+    trail.style.top = trailY - 10 + "px"
+
+    requestAnimationFrame(animateTrail)
+  }
+
+  animateTrail()
+}
+
+// Typing effect
+function initTypingEffect() {
+  const typingText = document.getElementById("typing-text")
+  const phrases = [
+    "Ethical Hacker",
+    "Security Researcher",
+    "Full-Stack Developer",
+    "Penetration Tester",
+    "Cybersecurity Enthusiast",
+  ]
+
+  let phraseIndex = 0
+  let charIndex = 0
+  let isDeleting = false
+
+  function typeEffect() {
+    const currentPhrase = phrases[phraseIndex]
+
+    if (isDeleting) {
+      typingText.textContent = currentPhrase.substring(0, charIndex - 1)
+      charIndex--
+    } else {
+      typingText.textContent = currentPhrase.substring(0, charIndex + 1)
+      charIndex++
+    }
+
+    let typeSpeed = isDeleting ? 50 : 100
+
+    if (!isDeleting && charIndex === currentPhrase.length) {
+      typeSpeed = 2000
+      isDeleting = true
+    } else if (isDeleting && charIndex === 0) {
+      isDeleting = false
+      phraseIndex = (phraseIndex + 1) % phrases.length
+      typeSpeed = 500
+    }
+
+    setTimeout(typeEffect, typeSpeed)
+  }
+
+  typeEffect()
+}
+
+// Enhanced logo animation on scroll
+function initLogoAnimation() {
+  const logoName = document.querySelector(".modern-logo-name")
+  const logoText = document.querySelector(".modern-logo-text")
+
+  if (!logoName || !logoText) return
+
+  // Add intersection observer for enhanced effects
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // Add special animation class when in view
+          logoName.style.animationPlayState = "running"
+          logoText.style.animationPlayState = "running"
+
+          // Add a subtle shake effect on first view
+          setTimeout(() => {
+            logoName.style.animation += ", logo-shake 0.5s ease-out"
+          }, 1000)
+        }
+      })
+    },
+    { threshold: 0.5 },
+  )
+
+  observer.observe(logoName)
+
+  // Add hover effects
+  logoName.addEventListener("mouseenter", () => {
+    logoName.style.animationDuration = "1s"
+    logoName.style.filter = "drop-shadow(0 0 30px rgba(0, 255, 255, 0.8)) drop-shadow(0 0 40px rgba(191, 0, 255, 0.6))"
+  })
+
+  logoName.addEventListener("mouseleave", () => {
+    logoName.style.animationDuration = "4s"
+    logoName.style.filter = ""
+  })
+}
+
+// Mobile menu
+function initMobileMenu() {
+  const mobileMenuBtn = document.getElementById("mobile-menu")
+  const mobileNav = document.getElementById("mobile-nav")
+  const mobileNavLinks = document.querySelectorAll(".mobile-nav-link")
+
+  mobileMenuBtn.addEventListener("click", () => {
+    mobileNav.classList.toggle("hidden")
+  })
+
+  mobileNavLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      mobileNav.classList.add("hidden")
+    })
+  })
+
+  // Close mobile menu on escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !mobileNav.classList.contains("hidden")) {
+      mobileNav.classList.add("hidden")
+    }
+  })
+}
+
+// Smooth scroll
+function initSmoothScroll() {
+  const navLinks = document.querySelectorAll('a[href^="#"]')
+
+  navLinks.forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault()
+      const targetId = link.getAttribute("href")
+      const targetSection = document.querySelector(targetId)
+
+      if (targetSection) {
+        targetSection.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        })
+      }
+    })
+  })
+}
+
+// Visitor terminal functionality
+function initVisitorTerminal() {
+  const scanStatus = document.getElementById("scan-status")
+  const visitorData = document.getElementById("visitor-data")
+  const progressFill = document.querySelector(".progress-fill")
+  const progressPercent = document.getElementById("progress-percent")
+  const exportBtn = document.getElementById("export-data")
+  const rescanBtn = document.getElementById("rescan")
+
+  let visitorInfo = {}
+
+  function startScan() {
+    // Reset UI
+    scanStatus.style.display = "block"
+    visitorData.classList.add("hidden")
+    progressFill.style.width = "0%"
+    progressPercent.textContent = "0"
+
+    // Simulate scanning progress
+    let progress = 0
+    const progressInterval = setInterval(() => {
+      progress += Math.random() * 15
+      if (progress > 100) progress = 100
+
+      progressFill.style.width = progress + "%"
+      progressPercent.textContent = Math.floor(progress)
+
+      if (progress >= 100) {
+        clearInterval(progressInterval)
+        setTimeout(() => {
+          scanStatus.style.display = "none"
+          gatherVisitorInfo()
+        }, 1000)
+      }
+    }, 200)
+  }
+
+  async function gatherVisitorInfo() {
+    try {
+      // Get IP and location info
+      const ipResponse = await fetch("https://ipapi.co/json/")
+      const ipData = await ipResponse.json()
+
+      // Get browser and system info
+      const browserInfo = getBrowserInfo()
+      const systemInfo = getSystemInfo()
+
+      visitorInfo = {
+        ip: ipData.ip || "Unknown",
+        location: `${ipData.city || "Unknown"}, ${ipData.region || "Unknown"}, ${ipData.country_name || "Unknown"}`,
+        browser: browserInfo,
+        os: systemInfo.os,
+        screenRes: `${screen.width}x${screen.height}`,
+        timezone: systemInfo.timezone,
+        battery: await getBatteryInfo(),
+        connection: getConnectionInfo(),
+        referrer: document.referrer || "Direct Access",
+      }
+
+      displayVisitorInfo()
+    } catch (error) {
+      console.error("Error gathering visitor info:", error)
+      // Fallback to basic info
+      visitorInfo = {
+        ip: "Unable to detect",
+        location: "Unknown Location",
+        browser: getBrowserInfo(),
+        os: getSystemInfo().os,
+        screenRes: `${screen.width}x${screen.height}`,
+        timezone: getSystemInfo().timezone,
+        battery: "Unknown",
+        connection: getConnectionInfo(),
+        referrer: document.referrer || "Direct Access",
+      }
+      displayVisitorInfo()
+    }
+  }
+
+  function displayVisitorInfo() {
+    document.getElementById("ip-address").textContent = visitorInfo.ip
+    document.getElementById("location").textContent = visitorInfo.location
+    document.getElementById("browser").textContent = visitorInfo.browser
+    document.getElementById("os-system").textContent = visitorInfo.os
+    document.getElementById("screen-res").textContent = visitorInfo.screenRes
+    document.getElementById("timezone").textContent = visitorInfo.timezone
+    document.getElementById("battery").textContent = visitorInfo.battery
+    document.getElementById("connection").textContent = visitorInfo.connection
+    document.getElementById("referrer").textContent = visitorInfo.referrer
+
+    visitorData.classList.remove("hidden")
+
+    // Animate data items
+    const dataItems = document.querySelectorAll(".data-item")
+    dataItems.forEach((item, index) => {
+      item.style.opacity = "0"
+      item.style.transform = "translateY(20px)"
+      setTimeout(() => {
+        item.style.opacity = "1"
+        item.style.transform = "translateY(0)"
+        item.style.transition = "all 0.3s ease"
+      }, index * 100)
+    })
+  }
+
+  function getBrowserInfo() {
+    const ua = navigator.userAgent
+    let browser = "Unknown Browser"
+
+    if (ua.includes("Chrome")) browser = "Chrome"
+    else if (ua.includes("Firefox")) browser = "Firefox"
+    else if (ua.includes("Safari")) browser = "Safari"
+    else if (ua.includes("Edge")) browser = "Edge"
+    else if (ua.includes("Opera")) browser = "Opera"
+
+    return browser
+  }
+
+  function getSystemInfo() {
+    const platform = navigator.platform
+    let os = "Unknown OS"
+
+    if (platform.includes("Win")) os = "Windows"
+    else if (platform.includes("Mac")) os = "macOS"
+    else if (platform.includes("Linux")) os = "Linux"
+    else if (platform.includes("Android")) os = "Android"
+    else if (platform.includes("iPhone")) os = "iOS"
+
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+    return { os, timezone }
+  }
+
+  async function getBatteryInfo() {
+    try {
+      if ("getBattery" in navigator) {
+        const battery = await navigator.getBattery()
+        return `${Math.round(battery.level * 100)}%`
+      }
+      return "Not Available"
+    } catch (error) {
+      return "Not Available"
+    }
+  }
+
+  function getConnectionInfo() {
+    if ("connection" in navigator) {
+      const connection = navigator.connection
+      return connection.effectiveType || "Unknown"
+    }
+    return "Unknown"
+  }
+
+  function exportVisitorData() {
+    const reportData = `
+VISITOR SCAN REPORT
+===================
+Generated: ${new Date().toLocaleString()}
+
+NETWORK INFORMATION:
+- IP Address: ${visitorInfo.ip}
+- Location: ${visitorInfo.location}
+- Connection: ${visitorInfo.connection}
+
+SYSTEM INFORMATION:
+- Browser: ${visitorInfo.browser}
+- Operating System: ${visitorInfo.os}
+- Screen Resolution: ${visitorInfo.screenRes}
+- Timezone: ${visitorInfo.timezone}
+- Battery Level: ${visitorInfo.battery}
+
+ACCESS INFORMATION:
+- Referrer: ${visitorInfo.referrer}
+- Scan Time: ${new Date().toLocaleString()}
+
+===================
+This report is for educational purposes only.
+All data shown is publicly accessible.
+    `.trim()
+
+    const blob = new Blob([reportData], { type: "text/plain" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `visitor_scan_${Date.now()}.txt`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+
+  // Event listeners
+  exportBtn.addEventListener("click", exportVisitorData)
+  rescanBtn.addEventListener("click", startScan)
+
+  // Start initial scan when terminal section comes into view
+  const terminalSection = document.getElementById("terminal")
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setTimeout(startScan, 500)
+          observer.unobserve(entry.target)
+        }
+      })
+    },
+    { threshold: 0.5 },
+  )
+
+  observer.observe(terminalSection)
+}
+
+// Scroll animations
+function initScrollAnimations() {
+  const animatedElements = document.querySelectorAll("[data-aos]")
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const element = entry.target
+          const animation = element.getAttribute("data-aos")
+          const delay = element.getAttribute("data-aos-delay") || 0
+
+          setTimeout(() => {
+            element.style.opacity = "1"
+            element.style.transform = "translateY(0)"
+            element.classList.add("aos-animate")
+          }, delay)
+
+          observer.unobserve(element)
+        }
+      })
+    },
+    { threshold: 0.1 },
+  )
+
+  animatedElements.forEach((element) => {
+    element.style.opacity = "0"
+    element.style.transform = "translateY(50px)"
+    element.style.transition = "all 0.6s ease"
+    observer.observe(element)
+  })
+}
+
+// Hover effects
+function addHoverEffects() {
+  // Add particle effects to buttons
+  const buttons = document.querySelectorAll(".cyber-btn")
+
+  buttons.forEach((button) => {
+    button.addEventListener("mouseenter", createParticles)
+  })
+
+  function createParticles(e) {
+    const button = e.target
+    const rect = button.getBoundingClientRect()
+
+    for (let i = 0; i < 5; i++) {
+      const particle = document.createElement("div")
+      particle.style.position = "absolute"
+      particle.style.width = "4px"
+      particle.style.height = "4px"
+      particle.style.background = "#00ffff"
+      particle.style.borderRadius = "50%"
+      particle.style.pointerEvents = "none"
+      particle.style.zIndex = "9999"
+      particle.style.boxShadow = "0 0 10px #00ffff"
+
+      const x = rect.left + Math.random() * rect.width
+      const y = rect.top + Math.random() * rect.height
+
+      particle.style.left = x + "px"
+      particle.style.top = y + "px"
+
+      document.body.appendChild(particle)
+
+      // Animate particle
+      const animation = particle.animate(
+        [
+          { transform: "translate(0, 0) scale(1)", opacity: 1 },
+          {
+            transform: `translate(${(Math.random() - 0.5) * 100}px, ${(Math.random() - 0.5) * 100}px) scale(0)`,
+            opacity: 0,
+          },
+        ],
+        {
+          duration: 1000,
+          easing: "ease-out",
+        },
+      )
+
+      animation.onfinish = () => particle.remove()
+    }
+  }
+}
+
+// Sound effects
+function addSoundEffects() {
+  // Create audio context for sound effects
+  let audioContext
+
+  function initAudio() {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)()
+    }
+  }
+
+  function playBeep(frequency = 800, duration = 100) {
+    initAudio()
+
+    const oscillator = audioContext.createOscillator()
+    const gainNode = audioContext.createGain()
+
+    oscillator.connect(gainNode)
+    gainNode.connect(audioContext.destination)
+
+    oscillator.frequency.value = frequency
+    oscillator.type = "square"
+
+    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime)
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000)
+
+    oscillator.start(audioContext.currentTime)
+    oscillator.stop(audioContext.currentTime + duration / 1000)
+  }
+
+  // Add sound to buttons
+  const buttons = document.querySelectorAll(".cyber-btn, .project-btn")
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => playBeep(600, 50))
+  })
+
+  // Add sound to navigation
+  const navLinks = document.querySelectorAll(".nav-link, .mobile-nav-link")
+  navLinks.forEach((link) => {
+    link.addEventListener("click", () => playBeep(800, 30))
+  })
+}
+
+// Console easter egg
+console.log(`
+ ██████╗██╗   ██╗██████╗ ███████╗██████╗ ██████╗ ███████╗██╗   ██╗
+██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔════╝██║   ██║
+██║      ╚████╔╝ ██████╔╝█████╗  ██████╔╝██║  ██║█████╗  ██║   ██║
+██║       ╚██╔╝  ██╔══██╗██╔══╝  ██╔══██╗██║  ██║██╔══╝  ╚██╗ ██╔╝
+╚██████╗   ██║   ██████╔╝███████╗██║  ██║██████╔╝███████╗ ╚████╔╝ 
+ ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝  ╚═══╝  
+
+Welcome to the CyberDev Portfolio!
+System Status: ONLINE
+Security Level: MAXIMUM
+Access Level: VISITOR
+
+Try these console commands:
+- location.href = '#terminal' (Jump to terminal)
+- document.body.style.filter = 'hue-rotate(180deg)' (Change theme)
+- console.clear() (Clear console)
+
+Stay curious, stay secure! 🔐
+`)
+
+    </script>
 </body>
-</html> 
+</html>

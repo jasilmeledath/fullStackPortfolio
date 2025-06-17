@@ -1,289 +1,365 @@
-<div class="row">
-  <div class="col-md-3">
-    <div class="list-group">
-      <a href="/admin" class="list-group-item list-group-item-action">
-        Dashboard
-      </a>
-      <a href="/admin/portfolio" class="list-group-item list-group-item-action active">
-        Portfolio
-      </a>
-      <a href="/admin/blog" class="list-group-item list-group-item-action">
-        Blog
-      </a>
-      <a href="/admin/messages" class="list-group-item list-group-item-action">
-        Messages
-      </a>
-    </div>
-  </div>
-  <div class="col-md-9">
-    <div class="card">
-      <div class="card-body">
-        <h2 class="card-title">Manage Portfolio</h2>
-        
-        <!-- General Information -->
-        <div class="mb-4">
-          <h3>General Information</h3>
-          <form id="generalInfoForm" class="needs-validation" novalidate>
-            <div class="mb-3">
-              <label for="siteTitle" class="form-label">Site Title</label>
-              <input type="text" class="form-control" id="siteTitle" name="siteTitle" required>
-            </div>
-            <div class="mb-3">
-              <label for="headerCaption" class="form-label">Header Caption</label>
-              <input type="text" class="form-control" id="headerCaption" name="headerCaption" required>
-            </div>
-            <div class="mb-3">
-              <label for="shortDescription" class="form-label">Short Description</label>
-              <textarea class="form-control" id="shortDescription" name="shortDescription" rows="2" required></textarea>
-            </div>
-            <div class="mb-3">
-              <label for="aboutMe" class="form-label">About Me</label>
-              <textarea class="form-control" id="aboutMe" name="aboutMe" rows="4" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Save Changes</button>
-          </form>
-        </div>
-
-        <!-- Skills -->
-        <div class="mb-4">
-          <h3>Skills</h3>
-          <form id="addSkillForm" class="mb-3">
-            <div class="row">
-              <div class="col-md-4">
-                <input type="text" class="form-control" placeholder="Icon URL" name="iconUrl" required>
-              </div>
-              <div class="col-md-4">
-                <input type="text" class="form-control" placeholder="Skill Name" name="name" required>
-              </div>
-              <div class="col-md-3">
-                <input type="number" class="form-control" placeholder="Proficiency (1-100)" name="proficiency" min="1" max="100" required>
-              </div>
-              <div class="col-md-1">
-                <button type="submit" class="btn btn-success">Add</button>
-              </div>
-            </div>
-          </form>
-          <div id="skillsList" class="list-group"></div>
-        </div>
-
-        <!-- Projects -->
-        <div>
-          <h3>Projects</h3>
-          <form id="addProjectForm" class="mb-3">
-            <div class="mb-3">
-              <input type="text" class="form-control" placeholder="Cover Image URL" name="coverImageUrl" required>
-            </div>
-            <div class="mb-3">
-              <input type="text" class="form-control" placeholder="Project Title" name="title" required>
-            </div>
-            <div class="mb-3">
-              <input type="text" class="form-control" placeholder="Caption" name="caption" required>
-            </div>
-            <div class="mb-3">
-              <textarea class="form-control" placeholder="Description" name="description" rows="3" required></textarea>
-            </div>
-            <div class="mb-3">
-              <input type="url" class="form-control" placeholder="Repository Link" name="repoLink" required>
-            </div>
-            <button type="submit" class="btn btn-success">Add Project</button>
-          </form>
-          <div id="projectsList" class="row"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-// Load portfolio data
-async function loadPortfolio() {
-  try {
-    const response = await fetch('/api/portfolio');
-    const data = await response.json();
+<%- include('partials/head') %>
+<body class="bg-black text-green-400 font-mono overflow-x-hidden">
+    <!-- Matrix Background -->
+    <canvas id="matrix-bg" class="fixed inset-0 z-0 opacity-20"></canvas>
     
-    if (response.ok) {
-      // Populate general information
-      document.getElementById('siteTitle').value = data.data.siteTitle;
-      document.getElementById('headerCaption').value = data.data.headerCaption;
-      document.getElementById('shortDescription').value = data.data.shortDescription;
-      document.getElementById('aboutMe').value = data.data.aboutMe;
+    <!-- Main Container -->
+    <div class="relative z-10 min-h-screen">
+        <!-- Header -->
+        <%- include('partials/header') %>
+        
+        <div class="container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <!-- Sidebar -->
+                <%- include('partials/sidebar') %>
+                <!-- Main Content -->
+                <div class="lg:col-span-3 space-y-6">
+                    <% /* Sections Accordion */ %>
+                    <!-- Intro Section -->
+                    <details class="bg-gray-900/50 border border-green-500/30 rounded-lg backdrop-blur-sm" open>
+                        <summary class="cursor-pointer px-6 py-4 text-lg font-bold text-green-400 hover:text-cyan-400">
+                            Intro Section
+                        </summary>
+                        <div class="p-6 space-y-4">
+                            <!-- Existing Intro -->
+                            <% if(intro) { %>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <p><strong>Site Title:</strong> <%= intro.siteTitle %></p>
+                                    <p><strong>Your Name:</strong> <%= intro.yourName %></p>
+                                    <p><strong>Roles:</strong> <%= intro.roles.join(', ') %></p>
+                                </div>
+                                <div>
+                                    <% if(intro.logoIcon){ %>
+                                    <img src="/<%= intro.logoIcon %>" alt="Logo Icon" class="w-24 h-24 object-contain" />
+                                    <% } %>
+                                </div>
+                            </div>
+                            <!-- Edit/Delete Buttons -->
+                            <div class="flex space-x-2">
+                                <button onclick="populateIntroForm()" class="px-4 py-2 bg-yellow-600/20 border border-yellow-500 text-yellow-400 rounded hover:bg-yellow-600/40">Edit</button>
+                                <form action="/admin/portfolio/intro" method="POST" onsubmit="return confirm('Delete intro?');">
+                                    <input type="hidden" name="_method" value="DELETE" />
+                                    <button type="submit" class="px-4 py-2 bg-red-600/20 border border-red-500 text-red-400 rounded hover:bg-red-600/40">Delete</button>
+                                </form>
+                            </div>
+                            <% } %>
 
-      // Populate skills
-      const skillsList = document.getElementById('skillsList');
-      skillsList.innerHTML = data.data.skills.map(skill => `
-        <div class="list-group-item d-flex justify-content-between align-items-center">
-          <div>
-            <img src="${skill.iconUrl}" alt="${skill.name}" width="24" height="24" class="me-2">
-            ${skill.name} (${skill.proficiency}%)
-          </div>
-          <button class="btn btn-danger btn-sm" onclick="removeSkill('${skill._id}')">Remove</button>
-        </div>
-      `).join('');
+                            <!-- Add / Update Form -->
+                            <form id="intro-form" action="/admin/portfolio/intro" method="POST" enctype="multipart/form-data" class="space-y-4" onsubmit="return validateIntro()">
+                                <input type="hidden" name="_method" value="<%= intro ? 'PUT' : 'POST' %>" />
+                                <div>
+                                    <label class="block text-sm">Site Title / Logo Text<span class="text-red-500">*</span></label>
+                                    <input type="text" name="siteTitle" value="<%= intro?.siteTitle || '' %>" required class="w-full bg-gray-800/60 border border-gray-700 rounded p-2 focus:outline-none focus:border-green-400" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm">Logo Icon<span class="text-red-500">*</span></label>
+                                    <input type="file" name="logoIcon" accept="image/*" class="w-full bg-gray-800/60 border border-gray-700 rounded p-2" onchange="previewImage(event, 'intro-logo-preview')" />
+                                    <img id="intro-logo-preview" class="mt-2 w-20 h-20 object-contain hidden" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm">Your Name<span class="text-red-500">*</span></label>
+                                    <input type="text" name="yourName" value="<%= intro?.yourName || '' %>" required class="w-full bg-gray-800/60 border border-gray-700 rounded p-2 focus:outline-none focus:border-green-400" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm">System Roles (comma separated)<span class="text-red-500">*</span></label>
+                                    <input type="text" name="roles" value="<%= intro?.roles?.join(', ') || '' %>" required class="w-full bg-gray-800/60 border border-gray-700 rounded p-2 focus:outline-none focus:border-green-400" />
+                                </div>
+                                <button type="submit" class="px-6 py-2 bg-green-600/20 border border-green-500 text-green-400 rounded hover:bg-green-600/40"> <%= intro ? 'Update Intro' : 'Add Intro' %> </button>
+                            </form>
+                        </div>
+                    </details>
 
-      // Populate projects
-      const projectsList = document.getElementById('projectsList');
-      projectsList.innerHTML = data.data.projects.map(project => `
-        <div class="col-md-6 mb-3">
-          <div class="card">
-            <img src="${project.coverImageUrl}" class="card-img-top" alt="${project.title}">
-            <div class="card-body">
-              <h5 class="card-title">${project.title}</h5>
-              <p class="card-text">${project.caption}</p>
-              <button class="btn btn-danger btn-sm" onclick="removeProject('${project._id}')">Remove</button>
+                    <!-- About Me Section -->
+                    <details class="bg-gray-900/50 border border-green-500/30 rounded-lg backdrop-blur-sm">
+                        <summary class="cursor-pointer px-6 py-4 text-lg font-bold text-green-400 hover:text-cyan-400">
+                            About Me Section
+                        </summary>
+                        <div class="p-6 space-y-4">
+                            <!-- List Badges -->
+                            <% if(about) { %>
+                            <div>
+                                <p class="mb-2"><strong>Biography:</strong></p>
+                                <p class="bg-gray-800/50 p-4 rounded"><%= about.bio %></p>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <% if(about.avatar){ %>
+                                <img src="/<%= about.avatar %>" alt="Avatar" class="w-24 h-24 rounded-full object-cover" />
+                                <% } %>
+                                <div>
+                                    <p><strong>Badges:</strong></p>
+                                    <div class="flex flex-wrap space-2">
+                                        <% about.badges.forEach(b => { %>
+                                        <div class="flex items-center space-x-1 bg-gray-800/50 p-2 rounded m-1">
+                                            <img src="/<%= b.badgeIcon %>" alt="<%= b.badgeName %>" class="w-6 h-6" />
+                                            <span><%= b.badgeName %></span>
+                                        </div>
+                                        <% }) %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button onclick="populateAboutForm()" class="px-4 py-2 bg-yellow-600/20 border border-yellow-500 text-yellow-400 rounded hover:bg-yellow-600/40">Edit</button>
+                                <form action="/admin/portfolio/about" method="POST" onsubmit="return confirm('Delete About Me?');">
+                                    <input type="hidden" name="_method" value="DELETE" />
+                                    <button type="submit" class="px-4 py-2 bg-red-600/20 border border-red-500 text-red-400 rounded hover:bg-red-600/40">Delete</button>
+                                </form>
+                            </div>
+                            <% } %>
+
+                            <!-- Form -->
+                            <form id="about-form" action="/admin/portfolio/about" method="POST" enctype="multipart/form-data" class="space-y-4" onsubmit="return validateAbout()">
+                                <input type="hidden" name="_method" value="<%= about ? 'PUT' : 'POST' %>" />
+                                <div>
+                                    <label class="block text-sm">Biography<span class="text-red-500">*</span></label>
+                                    <textarea name="bio" rows="4" required class="w-full bg-gray-800/60 border border-gray-700 rounded p-2 focus:outline-none focus:border-green-400"><%= about?.bio || '' %></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm">Avatar Image<span class="text-red-500">*</span></label>
+                                    <input type="file" name="avatar" accept="image/*" onchange="previewImage(event,'about-avatar-preview')" class="w-full bg-gray-800/60 border border-gray-700 rounded p-2" />
+                                    <img id="about-avatar-preview" class="mt-2 w-24 h-24 rounded-full object-cover hidden" />
+                                </div>
+                                <div id="badge-fields">
+                                    <label class="block text-sm">Badges<span class="text-red-500">*</span></label>
+                                    <% (about?.badges || [{badgeName:'',badgeIcon:''}]).forEach((b,i) => { %>
+                                    <div class="flex items-center space-x-2 mb-2">
+                                        <input type="text" name="badges[<%=i%>][badgeName]" value="<%= b.badgeName %>" placeholder="Badge Name" required class="bg-gray-800/60 border border-gray-700 rounded p-2 flex-1 focus:outline-none focus:border-green-400" />
+                                        <img id="badge-preview-<%=i%>" class="w-6 h-6 object-contain hidden" />
+                                        <button type="button" onclick="removeBadge(this)" class="text-red-500">×</button>
+                                    </div>
+                                    <% }) %>
+                                </div>
+                                <button type="button" onclick="addBadge()" class="text-cyan-400">+ Add Badge</button>
+                                <button type="submit" class="px-6 py-2 bg-green-600/20 border border-green-500 text-green-400 rounded hover:bg-green-600/40"> <%= about ? 'Update About' : 'Add About' %> </button>
+                            </form>
+                        </div>
+                    </details>
+
+                    <!-- Projects Section -->
+                    <details class="bg-gray-900/50 border border-green-500/30 rounded-lg backdrop-blur-sm">
+                        <summary class="cursor-pointer px-6 py-4 text-lg font-bold text-green-400 hover:text-cyan-400">
+                            Projects Section
+                        </summary>
+                        <div class="p-6 space-y-4">
+                            <!-- Add New Project Button -->
+                            <button type="button" onclick="showProjectForm()" class="px-4 py-2 bg-cyan-600/20 border border-cyan-500 text-cyan-400 rounded hover:bg-cyan-600/40">Add New Project</button>
+                            <!-- Projects List -->
+                            <div class="space-y-4">
+                                <% projects?.forEach((p,i) => { %>
+                                <div class="bg-gray-800/50 p-4 rounded border border-cyan-500 flex flex-col md:flex-row md:justify-between items-start md:items-center">
+                                    <div>
+                                        <h4 class="font-bold text-cyan-400"><%= p.title %></h4>
+                                        <p class="text-gray-300"><%= p.description %></p>
+                                        <div class="flex flex-wrap space-2 mt-2">
+                                            <% p.techBadges.forEach(t => { %>
+                                            <div class="flex items-center space-x-1 bg-gray-700/50 p-1 rounded m-1">
+                                                <img src="/<%= t.badgeIcon %>" alt="<%= t.techName %>" class="w-4 h-4" />
+                                                <span class="text-xs"><%= t.techName %></span>
+                                            </div>
+                                            <% }) %>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 md:mt-0 flex space-x-2">
+                                        <button onclick="editProject(<%=i%>)" class="px-3 py-1 bg-yellow-600/20 border border-yellow-500 text-yellow-400 rounded hover:bg-yellow-600/40">Edit</button>
+                                        <form action="/admin/portfolio/projects/<%= p._id %>" method="POST" onsubmit="return confirm('Delete project?');">
+                                            <input type="hidden" name="_method" value="DELETE" />
+                                            <button type="submit" class="px-3 py-1 bg-red-600/20 border border-red-500 text-red-400 rounded hover:bg-red-600/40">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <% }) %>
+                            </div>
+
+                            <!-- Project Form (Hidden) -->
+                            <form id="project-form" action="/admin/portfolio/projects" method="POST" enctype="multipart/form-data" class="space-y-4 hidden" onsubmit="return validateProject()">
+                                <input type="hidden" name="_method" value="POST" />
+                                <input type="hidden" name="projectIndex" />
+                                <div>
+                                    <label class="block text-sm">Project Title<span class="text-red-500">*</span></label>
+                                    <input type="text" name="title" required class="w-full bg-gray-800/60 border border-gray-700 rounded p-2 focus:outline-none focus:border-cyan-400" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm">Description<span class="text-red-500">*</span></label>
+                                    <textarea name="description" rows="3" required class="w-full bg-gray-800/60 border border-gray-700 rounded p-2 focus:outline-none focus:border-cyan-400"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm">Cover Image<span class="text-red-500">*</span></label>
+                                    <input type="file" name="coverImage" accept="image/*" onchange="previewImage(event,'project-cover-preview')" required class="w-full" />
+                                    <img id="project-cover-preview" class="mt-2 w-full max-w-xs h-auto object-contain hidden" />
+                                </div>
+                                <div id="tech-badge-fields">
+                                    <label class="block text-sm">Tech Badges<span class="text-red-500">*</span></label>
+                                    <div class="flex items-center space-x-2 mb-2">
+                                        <input type="text" name="techBadges[0][techName]" placeholder="Tech Name" required class="bg-gray-800/60 border border-gray-700 rounded p-2 focus:outline-none focus:border-cyan-400 flex-1" />
+                                        <input type="file" name="techBadges[0][badgeIcon]" accept="image/*" required onchange="previewImage(event,'tech-preview-0')" />
+                                        <img id="tech-preview-0" class="w-6 h-6 object-contain hidden" />
+                                        <button type="button" onclick="removeTech(this)" class="text-red-500">×</button>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="addTech()" class="text-cyan-400">+ Add Tech Badge</button>
+                                <button type="submit" class="px-6 py-2 bg-cyan-600/20 border border-cyan-500 text-cyan-400 rounded hover:bg-cyan-600/40">Save Project</button>
+                            </form>
+                        </div>
+                    </details>
+
+                    <!-- Skills Section -->
+                    <details class="bg-gray-900/50 border border-green-500/30 rounded-lg backdrop-blur-sm">
+                        <summary class="cursor-pointer px-6 py-4 text-lg font-bold text-green-400 hover:text-cyan-400">
+                            Skills Section
+                        </summary>
+                        <div class="p-6 space-y-4">
+                            <!-- Categories List -->
+                            <div id="skill-categories" class="space-y-4">
+                                <% skills?.forEach((cat,i) => { %>
+                                <div class="bg-gray-800/50 p-4 rounded border border-green-500">
+                                    <div class="flex justify-between items-center">
+                                        <h4 class="font-bold text-green-400"><%= cat.category %></h4>
+                                        <button onclick="removeCategory(<%=i%>)" class="text-red-500">×</button>
+                                    </div>
+                                    <div class="mt-2 space-y-2">
+                                        <% cat.items.forEach((s,j) => { %>
+                                        <div class="flex items-center space-x-2">
+                                            <input type="text" name="skills[<%=i%>][items][<%=j%>]" value="<%= s %>" required class="bg-gray-800/60 border border-gray-700 rounded p-2 flex-1 focus:outline-none focus:border-green-400" />
+                                            <button type="button" onclick="removeSkill(this)" class="text-red-500">×</button>
+                                        </div>
+                                        <% }) %>
+                                        <button type="button" onclick="addSkill(this)" class="text-cyan-400">+ Add Skill</button>
+                                    </div>
+                                </div>
+                                <% }) %>
+                            </div>
+                            <button type="button" onclick="addCategory()" class="text-cyan-400">+ Add Category</button>
+                            <form action="/admin/portfolio/skills" method="POST" class="mt-4">
+                                <button type="submit" class="px-6 py-2 bg-green-600/20 border border-green-500 text-green-400 rounded hover:bg-green-600/40">Save Skills</button>
+                            </form>
+                        </div>
+                    </details>
+
+                </div>
             </div>
-          </div>
         </div>
-      `).join('');
-    }
-  } catch (error) {
-    console.error('Error loading portfolio:', error);
-    alert('Error loading portfolio data');
-  }
-}
+    </div>
 
-// Save general information
-document.getElementById('generalInfoForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  
-  try {
-    const response = await fetch('/api/portfolio', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      },
-      body: JSON.stringify({
-        siteTitle: document.getElementById('siteTitle').value,
-        headerCaption: document.getElementById('headerCaption').value,
-        shortDescription: document.getElementById('shortDescription').value,
-        aboutMe: document.getElementById('aboutMe').value
-      })
-    });
+    <%- include('partials/footer') %>
 
-    if (response.ok) {
-      alert('Portfolio updated successfully');
-    } else {
-      const data = await response.json();
-      alert(data.message || 'Error updating portfolio');
-    }
-  } catch (error) {
-    console.error('Error updating portfolio:', error);
-    alert('Error updating portfolio');
-  }
-});
-
-// Add skill
-document.getElementById('addSkillForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  
-  try {
-    const response = await fetch('/api/portfolio/skills', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      },
-      body: JSON.stringify({
-        iconUrl: e.target.iconUrl.value,
-        name: e.target.name.value,
-        proficiency: parseInt(e.target.proficiency.value)
-      })
-    });
-
-    if (response.ok) {
-      e.target.reset();
-      loadPortfolio();
-    } else {
-      const data = await response.json();
-      alert(data.message || 'Error adding skill');
-    }
-  } catch (error) {
-    console.error('Error adding skill:', error);
-    alert('Error adding skill');
-  }
-});
-
-// Add project
-document.getElementById('addProjectForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  
-  try {
-    const response = await fetch('/api/portfolio/projects', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      },
-      body: JSON.stringify({
-        coverImageUrl: e.target.coverImageUrl.value,
-        title: e.target.title.value,
-        caption: e.target.caption.value,
-        description: e.target.description.value,
-        repoLink: e.target.repoLink.value
-      })
-    });
-
-    if (response.ok) {
-      e.target.reset();
-      loadPortfolio();
-    } else {
-      const data = await response.json();
-      alert(data.message || 'Error adding project');
-    }
-  } catch (error) {
-    console.error('Error adding project:', error);
-    alert('Error adding project');
-  }
-});
-
-// Remove skill
-async function removeSkill(skillId) {
-  if (!confirm('Are you sure you want to remove this skill?')) return;
-  
-  try {
-    const response = await fetch(`/api/portfolio/skills/${skillId}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    });
-
-    if (response.ok) {
-      loadPortfolio();
-    } else {
-      const data = await response.json();
-      alert(data.message || 'Error removing skill');
-    }
-  } catch (error) {
-    console.error('Error removing skill:', error);
-    alert('Error removing skill');
-  }
-}
-
-// Remove project
-async function removeProject(projectId) {
-  if (!confirm('Are you sure you want to remove this project?')) return;
-  
-  try {
-    const response = await fetch(`/api/portfolio/projects/${projectId}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    });
-
-    if (response.ok) {
-      loadPortfolio();
-    } else {
-      const data = await response.json();
-      alert(data.message || 'Error removing project');
-    }
-  } catch (error) {
-    console.error('Error removing project:', error);
-    alert('Error removing project');
-  }
-}
-
-// Load portfolio data on page load
-loadPortfolio();
-</script> 
+    <!-- Scripts for Preview & Form Logic -->
+    <script>
+        // Image preview
+        function previewImage(event, id) {
+            const input = event.target;
+            const preview = document.getElementById(id);
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        // Intro Form populate
+        function populateIntroForm() {
+            document.getElementById('intro-form').scrollIntoView({ behavior: 'smooth' });
+        }
+        function validateIntro() {
+            return !!document.querySelector('#intro-form [name="siteTitle"]').value;
+        }
+        // About logic
+        function populateAboutForm() { document.getElementById('about-form').scrollIntoView({ behavior: 'smooth' }); }
+        function validateAbout() { return !!document.querySelector('#about-form [name="bio"]').value; }
+        function addBadge() {
+            const container = document.getElementById('badge-fields');
+            const idx = container.querySelectorAll('input[type="text"]').length;
+            const div = document.createElement('div');
+            div.className = 'flex items-center space-x-2 mb-2';
+            div.innerHTML = `
+                <input type="text" name="badges[${idx}][badgeName]" placeholder="Badge Name" required class="bg-gray-800/60 border border-gray-700 rounded p-2 flex-1" />
+                <input type="file" name="badges[${idx}][badgeIcon]" accept="image/*" onchange="previewImage(event,'badge-preview-${idx}')" required />
+                <img id="badge-preview-${idx}" class="w-6 h-6 object-contain hidden" />
+                <button type="button" onclick="removeBadge(this)" class="text-red-500">×</button>
+            `;
+            container.appendChild(div);
+        }
+        function removeBadge(btn) { btn.parentElement.remove(); }
+        // Projects logic
+        function showProjectForm() { document.getElementById('project-form').classList.remove('hidden'); }
+        function editProject(i) {
+            const p = <%- JSON.stringify(projects) %>[i];
+            const form = document.getElementById('project-form');
+            form.action = `/admin/portfolio/projects/${p._id}`;
+            form.querySelector('[name="_method"]').value = 'PUT';
+            form.querySelector('[name="title"]').value = p.title;
+            form.querySelector('[name="description"]').value = p.description;
+            form.querySelector('[name="projectIndex"]').value = i;
+            document.getElementById('tech-badge-fields').innerHTML = '';
+            p.techBadges.forEach((t,j) => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center space-x-2 mb-2';
+                div.innerHTML = `
+                    <input type="text" name="techBadges[${j}][techName]" value="${t.techName}" required class="bg-gray-800/60 border border-gray-700 rounded p-2 flex-1" />
+                    <input type="file" name="techBadges[${j}][badgeIcon]" accept="image/*" onchange="previewImage(event,'tech-preview-${j}')" />
+                    <img id="tech-preview-${j}" src="/${t.badgeIcon}" class="w-6 h-6 object-contain" />
+                    <button type="button" onclick="removeTech(this)" class="text-red-500">×</button>
+                `;
+                document.getElementById('tech-badge-fields').appendChild(div);
+            });
+            form.classList.remove('hidden'); form.scrollIntoView({ behavior: 'smooth' });
+        }
+        function addTech() {
+            const container = document.getElementById('tech-badge-fields');
+            const idx = container.querySelectorAll('input[type="text"]').length;
+            const div = document.createElement('div');
+            div.className = 'flex items-center space-x-2 mb-2';
+            div.innerHTML = `
+                <input type="text" name="techBadges[${idx}][techName]" placeholder="Tech Name" required class="bg-gray-800/60 border border-gray-700 rounded p-2 flex-1" />
+                <input type="file" name="techBadges[${idx}][badgeIcon]" accept="image/*" onchange="previewImage(event,'tech-preview-${idx}')" required />
+                <img id="tech-preview-${idx}" class="w-6 h-6 object-contain hidden" />
+                <button type="button" onclick="removeTech(this)" class="text-red-500">×</button>
+            `;
+            container.appendChild(div);
+        }
+        function removeTech(btn) { btn.parentElement.remove(); }
+        function validateProject() { return !!document.querySelector('#project-form [name="title"]').value; }
+        // Skills logic
+        function addCategory() {
+            const container = document.getElementById('skill-categories');
+            const idx = container.children.length;
+            const div = document.createElement('div'); div.className = 'bg-gray-800/50 p-4 rounded border border-green-500';
+            div.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <input type="text" name="skills[${idx}][category]" placeholder="Category Name" required class="bg-gray-800/60 border border-gray-700 rounded p-2 focus:outline-none flex-1" />
+                    <button onclick="removeCategory(${idx})" class="text-red-500">×</button>
+                </div>
+                <div class="mt-2 space-y-2">
+                    <div class="flex items-center space-x-2">
+                        <input type="text" name="skills[${idx}][items][0]" placeholder="Skill Name" required class="bg-gray-800/60 border border-gray-700 rounded p-2 flex-1" />
+                        <button type="button" onclick="removeSkill(this)" class="text-red-500">×</button>
+                    </div>
+                    <button type="button" onclick="addSkill(this)" class="text-cyan-400">+ Add Skill</button>
+                </div>`;
+            container.appendChild(div);
+        }
+        function removeCategory(i) { document.getElementById('skill-categories').children[i].remove(); }
+        function addSkill(btn) {
+            const parent = btn.closest('[border]');
+            const idx = parent.querySelectorAll('input[type="text"]').length;
+            const div = document.createElement('div'); div.className='flex items-center space-x-2';
+            div.innerHTML = `<input type="text" name="skills[${[...parent.parentElement.children].indexOf(parent)}][items][${idx-1}]" placeholder="Skill Name" required class="bg-gray-800/60 border border-gray-700 rounded p-2 flex-1" /><button type="button" onclick="removeSkill(this)" class="text-red-500">×</button>`;
+            btn.before(div);
+        }
+        function removeSkill(btn) { btn.parentElement.remove(); }
+        // Blog logic
+        function showBlogForm() { document.getElementById('blog-form').classList.remove('hidden'); }
+        function editPost(i) {
+            const p = <%- JSON.stringify(posts) %>[i]; const form = document.getElementById('blog-form');
+            form.action = `/admin/portfolio/posts/${p._id}`;
+            form.querySelector('[name="_method"]').value='PUT';
+            form.querySelector('[name="category"]').value=p.category;
+            form.querySelector('[name="title"]').value=p.title;
+            form.querySelector('[name="shortDesc"]').value=p.shortDesc;
+            form.querySelector('[name="url"]').value=p.url;
+            form.classList.remove('hidden'); form.scrollIntoView({ behavior: 'smooth' });
+        }
+        function validateBlog() { return !!document.querySelector('#blog-form [name="title"]').value; }
+    </script>
+</body>

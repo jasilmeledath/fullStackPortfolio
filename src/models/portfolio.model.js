@@ -1,5 +1,26 @@
 const mongoose = require('mongoose');
 
+const categorySchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'Category name is required'],
+    trim: true,
+    unique: true
+  },
+  type: {
+    type: String,
+    required: [true, 'Category type is required'],
+    enum: ['skill', 'blog'],
+    trim: true
+  },
+  description: {
+    type: String,
+    trim: true
+  }
+}, {
+  timestamps: true
+});
+
 const skillSchema = new mongoose.Schema({
   iconUrl: {
     type: String,
@@ -10,11 +31,16 @@ const skillSchema = new mongoose.Schema({
     required: [true, 'Skill name is required'],
     trim: true
   },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+    required: [true, 'Skill category is required']
+  },
   proficiency: {
     type: Number,
-    required: [true, 'Proficiency level is required'],
     min: 1,
-    max: 100
+    max: 5,
+    required: [true, 'Proficiency level is required']
   }
 });
 
@@ -44,6 +70,40 @@ const projectSchema = new mongoose.Schema({
   }
 });
 
+const blogSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: [true, 'Blog title is required'],
+    trim: true
+  },
+  content: {
+    type: String,
+    required: [true, 'Blog content is required']
+  },
+  coverImage: {
+    type: String,
+    required: [true, 'Cover image is required']
+  },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+    required: [true, 'Blog category is required']
+  },
+  tags: [{
+    type: String,
+    trim: true
+  }],
+  published: {
+    type: Boolean,
+    default: false
+  },
+  publishedAt: {
+    type: Date
+  }
+}, {
+  timestamps: true
+});
+
 const portfolioSchema = new mongoose.Schema({
   siteTitle: {
     type: String,
@@ -65,7 +125,8 @@ const portfolioSchema = new mongoose.Schema({
     required: [true, 'About me section is required']
   },
   skills: [skillSchema],
-  projects: [projectSchema]
+  projects: [projectSchema],
+  blogs: [blogSchema]
 }, {
   timestamps: true
 });
@@ -81,6 +142,7 @@ portfolioSchema.pre('save', async function(next) {
   next();
 });
 
+const Category = mongoose.model('Category', categorySchema);
 const Portfolio = mongoose.model('Portfolio', portfolioSchema);
 
-module.exports = Portfolio; 
+module.exports = { Portfolio, Category };

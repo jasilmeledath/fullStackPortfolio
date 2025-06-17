@@ -1,0 +1,345 @@
+<script>
+    // Dashboard JavaScript functionality
+document.addEventListener("DOMContentLoaded", () => {
+// Initialize all dashboard features
+initMatrixBackground()
+initTypingEffect()
+initCounters()
+initSystemStats()
+initTerminal()
+initLastLogin()
+initActivityItems()
+
+// Add some interactive effects
+addHoverEffects()
+addKeyboardShortcuts()
+})
+
+// Matrix background effect
+function initMatrixBackground() {
+const canvas = document.getElementById("matrix-bg")
+const ctx = canvas.getContext("2d")
+
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight
+
+const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%+-/~{[|`]}"
+const matrixArray = matrix.split("")
+
+const fontSize = 10
+const columns = canvas.width / fontSize
+
+const drops = []
+for (let x = 0; x < columns; x++) {
+drops[x] = 1
+}
+
+function drawMatrix() {
+ctx.fillStyle = "rgba(0, 0, 0, 0.04)"
+ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+ctx.fillStyle = "#0F0"
+ctx.font = fontSize + "px monospace"
+
+for (let i = 0; i < drops.length; i++) {
+  const text = matrixArray[Math.floor(Math.random() * matrixArray.length)]
+  ctx.fillText(text, i * fontSize, drops[i] * fontSize)
+
+  if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+    drops[i] = 0
+  }
+  drops[i]++
+}
+}
+
+setInterval(drawMatrix, 35)
+
+// Resize canvas on window resize
+window.addEventListener("resize", () => {
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight
+})
+}
+
+// Typing effect for username
+function initTypingEffect() {
+const typingElements = document.querySelectorAll(".typing-text")
+
+typingElements.forEach((element) => {
+const text = element.getAttribute("data-text")
+element.textContent = ""
+
+let i = 0
+const typeWriter = () => {
+  if (i < text.length) {
+    element.textContent += text.charAt(i)
+    i++
+    setTimeout(typeWriter, 100)
+  }
+}
+
+setTimeout(typeWriter, 500)
+})
+}
+
+// Counter animation
+function initCounters() {
+const counters = document.querySelectorAll(".counter")
+
+const animateCounter = (counter) => {
+const target = Number.parseInt(counter.getAttribute("data-target"))
+const increment = target / 50
+let current = 0
+
+const updateCounter = () => {
+  if (current < target) {
+    current += increment
+    counter.textContent = Math.ceil(current)
+    setTimeout(updateCounter, 40)
+  } else {
+    counter.textContent = target
+  }
+}
+
+updateCounter()
+}
+
+// Intersection Observer for counter animation
+const observer = new IntersectionObserver((entries) => {
+entries.forEach((entry) => {
+  if (entry.isIntersecting) {
+    animateCounter(entry.target)
+    observer.unobserve(entry.target)
+  }
+})
+})
+
+counters.forEach((counter) => observer.observe(counter))
+}
+
+// System stats simulation
+function initSystemStats() {
+const cpuBar = document.querySelector(".cpu-bar")
+const cpuPercent = document.querySelector(".cpu-percent")
+const memoryBar = document.querySelector(".memory-bar")
+const memoryPercent = document.querySelector(".memory-percent")
+
+function updateStats() {
+// Simulate CPU usage
+const cpu = Math.floor(Math.random() * 40) + 30 // 30-70%
+cpuBar.style.width = cpu + "%"
+cpuPercent.textContent = cpu + "%"
+
+// Simulate memory usage
+const memory = Math.floor(Math.random() * 30) + 50 // 50-80%
+memoryBar.style.width = memory + "%"
+memoryPercent.textContent = memory + "%"
+
+// Change colors based on usage
+if (cpu > 60) {
+  cpuBar.className = "cpu-bar h-full bg-red-500 rounded-full transition-all duration-1000"
+} else if (cpu > 40) {
+  cpuBar.className = "cpu-bar h-full bg-yellow-500 rounded-full transition-all duration-1000"
+} else {
+  cpuBar.className = "cpu-bar h-full bg-green-500 rounded-full transition-all duration-1000"
+}
+
+if (memory > 70) {
+  memoryBar.className = "memory-bar h-full bg-red-500 rounded-full transition-all duration-1000"
+} else {
+  memoryBar.className = "memory-bar h-full bg-cyan-500 rounded-full transition-all duration-1000"
+}
+}
+
+updateStats()
+setInterval(updateStats, 3000)
+}
+
+// Terminal functionality
+function initTerminal() {
+const terminalModal = document.getElementById("terminal-modal")
+const closeTerminal = document.getElementById("close-terminal")
+const terminalInput = document.getElementById("terminal-input")
+const terminalOutput = document.getElementById("terminal-output")
+
+// Open terminal with Ctrl+`
+document.addEventListener("keydown", (e) => {
+if (e.ctrlKey && e.key === "`") {
+  e.preventDefault()
+  terminalModal.classList.remove("hidden")
+  terminalInput.focus()
+}
+})
+
+closeTerminal.addEventListener("click", () => {
+terminalModal.classList.add("hidden")
+})
+
+terminalInput.addEventListener("keydown", function (e) {
+if (e.key === "Enter") {
+  const command = this.value.trim()
+  if (command) {
+    executeCommand(command)
+    this.value = ""
+  }
+}
+})
+
+function executeCommand(command) {
+const output = document.createElement("div")
+output.className = "text-green-400"
+output.textContent = `$ ${command}`
+terminalOutput.appendChild(output)
+
+const response = document.createElement("div")
+response.className = "text-gray-300 mb-2"
+
+switch (command.toLowerCase()) {
+  case "help":
+    response.innerHTML = `Available commands:<br>
+            - status: Show system status<br>
+            - clear: Clear terminal<br>
+            - whoami: Show current user<br>
+            - date: Show current date<br>
+            - exit: Close terminal`
+    break
+  case "status":
+    response.textContent = "System: ONLINE | Security: ACTIVE | Users: 1 connected"
+    break
+  case "clear":
+    terminalOutput.innerHTML = '<div class="text-green-400">Terminal cleared...</div>'
+    return
+  case "whoami":
+    response.textContent = document.querySelector(".typing-text").getAttribute("data-text")
+    break
+  case "date":
+    response.textContent = new Date().toString()
+    break
+  case "exit":
+    document.getElementById("terminal-modal").classList.add("hidden")
+    return
+  default:
+    response.textContent = `Command not found: ${command}. Type 'help' for available commands.`
+    response.className = "text-red-400 mb-2"
+}
+
+terminalOutput.appendChild(response)
+terminalOutput.scrollTop = terminalOutput.scrollHeight
+}
+}
+
+// Last login time
+function initLastLogin() {
+const lastLoginElement = document.getElementById("last-login")
+const now = new Date()
+const lastLogin = new Date(now.getTime() - Math.random() * 24 * 60 * 60 * 1000) // Random time within last 24 hours
+
+lastLoginElement.textContent = lastLogin.toLocaleString()
+}
+
+// Activity items animation
+function initActivityItems() {
+const activityItems = document.querySelectorAll(".activity-item")
+
+const observer = new IntersectionObserver((entries) => {
+entries.forEach((entry, index) => {
+  if (entry.isIntersecting) {
+    setTimeout(() => {
+      entry.target.style.opacity = "1"
+      entry.target.style.transform = "translateX(0)"
+    }, index * 100)
+    observer.unobserve(entry.target)
+  }
+})
+})
+
+activityItems.forEach((item) => {
+item.style.opacity = "0"
+item.style.transform = "translateX(-20px)"
+item.style.transition = "all 0.6s ease-out"
+observer.observe(item)
+})
+}
+
+// Hover effects
+function addHoverEffects() {
+const statCards = document.querySelectorAll(".stat-card")
+
+statCards.forEach((card) => {
+card.addEventListener("mouseenter", function () {
+  this.style.transform = "translateY(-5px) scale(1.02)"
+  this.style.boxShadow = "0 20px 40px rgba(0, 0, 0, 0.3)"
+})
+
+card.addEventListener("mouseleave", function () {
+  this.style.transform = "translateY(0) scale(1)"
+  this.style.boxShadow = "none"
+})
+})
+}
+
+// Keyboard shortcuts
+function addKeyboardShortcuts() {
+document.addEventListener("keydown", (e) => {
+// Ctrl + D for Dashboard
+if (e.ctrlKey && e.key === "d") {
+  e.preventDefault()
+  window.location.href = "/admin"
+}
+
+// Ctrl + P for Portfolio
+if (e.ctrlKey && e.key === "p") {
+  e.preventDefault()
+  window.location.href = "/admin/portfolio"
+}
+
+// Ctrl + B for Blog
+if (e.ctrlKey && e.key === "b") {
+  e.preventDefault()
+  window.location.href = "/admin/blog"
+}
+
+// Ctrl + M for Messages
+if (e.ctrlKey && e.key === "m") {
+  e.preventDefault()
+  window.location.href = "/admin/messages"
+}
+})
+}
+
+// Logout functionality
+document.getElementById("logout-btn").addEventListener("click", (e) => {
+e.preventDefault()
+
+if (confirm("Are you sure you want to logout?")) {
+// Add logout animation
+document.body.style.opacity = "0"
+document.body.style.transition = "opacity 0.5s ease-out"
+
+setTimeout(() => {
+  window.location.href = "/logout"
+}, 500)
+}
+})
+
+// Add some console easter eggs
+console.log(`
+██╗  ██╗ █████╗  ██████╗██╗  ██╗███████╗██████╗ 
+██║  ██║██╔══██╗██╔════╝██║ ██╔╝██╔════╝██╔══██╗
+███████║███████║██║     █████╔╝ █████╗  ██████╔╝
+██╔══██║██╔══██║██║     ██╔═██╗ ██╔══╝  ██╔══██╗
+██║  ██║██║  ██║╚██████╗██║  ██╗███████╗██║  ██║
+╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
+
+Welcome to the Admin Dashboard!
+Try these keyboard shortcuts:
+- Ctrl + \` : Open Terminal
+- Ctrl + D : Dashboard
+- Ctrl + P : Portfolio
+- Ctrl + B : Blog
+- Ctrl + M : Messages
+`)
+
+</script>
+</body>
+</html>

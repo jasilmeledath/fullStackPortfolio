@@ -1,16 +1,529 @@
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-8 text-center">
-      <h1 class="display-1 text-danger">Oops!</h1>
-      <h2 class="mb-4">Something went wrong</h2>
-      <p class="lead mb-4"><%= message %></p>
-      <% if (process.env.NODE_ENV === 'development' && error) { %>
-        <div class="alert alert-danger text-start">
-          <h5>Error Details:</h5>
-          <pre class="mb-0"><%= error.stack %></pre>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM ERROR - ACCESS DENIED</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono:wght@400&family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: #0a0a0a;
+            color: #00ff41;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Matrix-style falling code background */
+        #matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        /* Glitch effect */
+        .glitch {
+            position: relative;
+            color: #00ff41;
+            font-size: 4rem;
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            animation: glitch 2s infinite;
+        }
+        
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .glitch::before {
+            animation: glitch-1 0.3s infinite;
+            color: #ff0040;
+            z-index: -1;
+        }
+        
+        .glitch::after {
+            animation: glitch-2 0.3s infinite;
+            color: #00ffff;
+            z-index: -2;
+        }
+        
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+        
+        @keyframes glitch-1 {
+            0% { transform: translate(0); }
+            25% { transform: translate(2px, -2px); }
+            50% { transform: translate(-2px, 2px); }
+            75% { transform: translate(2px, 2px); }
+            100% { transform: translate(0); }
+        }
+        
+        @keyframes glitch-2 {
+            0% { transform: translate(0); }
+            25% { transform: translate(-2px, 2px); }
+            50% { transform: translate(2px, -2px); }
+            75% { transform: translate(-2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .error-wrapper {
+            text-align: center;
+            margin-top: 5vh;
+        }
+        
+        .terminal-window {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            margin: 2rem auto;
+            max-width: 800px;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+            animation: pulse-border 2s infinite;
+        }
+        
+        @keyframes pulse-border {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 65, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(0, 255, 65, 0.8); }
+        }
+        
+        .terminal-header {
+            background: linear-gradient(90deg, #00ff41, #00cc33);
+            color: #000;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            border-radius: 8px 8px 0 0;
+            font-weight: bold;
+        }
+        
+        .terminal-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-right: 1rem;
+        }
+        
+        .terminal-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff5f57;
+        }
+        
+        .terminal-button:nth-child(2) { background: #ffbd2e; }
+        .terminal-button:nth-child(3) { background: #28ca42; }
+        
+        .terminal-content {
+            padding: 2rem;
+            text-align: left;
+        }
+        
+        .error-code {
+            color: #ff0040;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px rgba(255, 0, 64, 0.5);
+        }
+        
+        .error-message {
+            color: #ffff00;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+        
+        .error-details {
+            background: rgba(255, 0, 64, 0.1);
+            border: 1px solid #ff0040;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 1rem 0;
+            max-height: 300px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        
+        .error-details h5 {
+            color: #ff0040;
+            margin-bottom: 0.5rem;
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .error-details pre {
+            color: #00ffff;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .system-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .info-panel {
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid #00ff41;
+            border-radius: 5px;
+            padding: 1rem;
+        }
+        
+        .info-panel h6 {
+            color: #00ff41;
+            margin-bottom: 0.5rem;
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .info-panel span {
+            color: #ffff00;
+            font-size: 0.9rem;
+        }
+        
+        .hacker-btn {
+            background: linear-gradient(45deg, #00ff41, #00cc33);
+            color: #000;
+            border: none;
+            padding: 1rem 2rem;
+            font-family: 'Orbitron', monospace;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+        }
+        
+        .hacker-btn:hover {
+            background: linear-gradient(45deg, #00cc33, #00ff41);
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.6);
+            transform: translateY(-2px);
+        }
+        
+        .hacker-btn:active {
+            transform: translateY(0);
+        }
+        
+        .log-panel {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ffff;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 2rem 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .log-entry {
+            color: #00ffff;
+            font-size: 0.8rem;
+            margin: 0.2rem 0;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        .log-entry:nth-child(odd) { color: #ffff00; }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .typing {
+            border-right: 2px solid #00ff41;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { border-color: transparent; }
+            51%, 100% { border-color: #00ff41; }
+        }
+        
+        @media (max-width: 768px) {
+            .glitch { font-size: 2.5rem; }
+            .container { padding: 1rem; }
+            .system-info { grid-template-columns: 1fr; }
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #00ff41;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00cc33;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix-bg"></canvas>
+    
+    <div class="container">
+        <div class="error-wrapper">
+            <h1 class="glitch" data-text="SYSTEM ERROR">SYSTEM ERROR</h1>
+            
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="terminal-buttons">
+                        <div class="terminal-button"></div>
+                        <div class="terminal-button"></div>
+                        <div class="terminal-button"></div>
+                    </div>
+                    <span>root@hackersystem:~/error_handler</span>
+                </div>
+                
+                <div class="terminal-content">
+                    <div class="error-code">
+                        >> ERROR_CODE: HTTP_500_INTERNAL_SERVER_ERROR
+                    </div>
+                    
+                    <div class="error-message">
+                        >> BREACH_DETECTED: <%= message || 'Unknown system anomaly detected. Security protocols initiated.' %>
+                    </div>
+                    
+                    <div class="system-info">
+                        <div class="info-panel">
+                            <h6>TIMESTAMP</h6>
+                            <span id="timestamp"></span>
+                        </div>
+                        <div class="info-panel">
+                            <h6>USER_AGENT</h6>
+                            <span id="user-agent"></span>
+                        </div>
+                        <div class="info-panel">
+                            <h6>IP_ADDRESS</h6>
+                            <span id="ip-address">CLASSIFIED</span>
+                        </div>
+                        <div class="info-panel">
+                            <h6>SESSION_ID</h6>
+                            <span id="session-id"></span>
+                        </div>
+                    </div>
+                    
+                    <% if (process.env.NODE_ENV === 'development' && error) { %>
+                    <div class="error-details">
+                        <h5>>> STACK_TRACE_ANALYSIS:</h5>
+                        <pre><%= error.stack %></pre>
+                    </div>
+                    <% } %>
+                    
+                    <div class="log-panel">
+                        <div class="log-entry">[INIT] System diagnostic initiated...</div>
+                        <div class="log-entry">[SCAN] Checking system integrity...</div>
+                        <div class="log-entry">[WARN] Anomaly detected in request pipeline</div>
+                        <div class="log-entry">[ERROR] Critical system failure encountered</div>
+                        <div class="log-entry">[INFO] Error logging system activated</div>
+                        <div class="log-entry">[READY] Awaiting user action...</div>
+                        <div class="log-entry typing" id="typing-cursor"></div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <a href="/" class="hacker-btn">INITIALIZE_RECOVERY</a>
+                        <button onclick="generateReport()" class="hacker-btn">GENERATE_REPORT</button>
+                        <button onclick="retryConnection()" class="hacker-btn">RETRY_CONNECTION</button>
+                    </div>
+                </div>
+            </div>
         </div>
-      <% } %>
-      <a href="/" class="btn btn-primary">Go Home</a>
     </div>
-  </div>
-</div> 
+
+    <script>
+        // Matrix background effect
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%+-/~{[|`]}";
+        const matrixArray = matrix.split("");
+        
+        const fontSize = 10;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+        
+        for (let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
+        
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#00ff41';
+            ctx.font = fontSize + 'px monospace';
+            
+            for (let i = 0; i < drops.length; i++) {
+                const text = matrixArray[Math.floor(Math.random() * matrixArray.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        
+        setInterval(drawMatrix, 35);
+        
+        // Resize canvas on window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        // Initialize system info
+        function initializeSystemInfo() {
+            document.getElementById('timestamp').textContent = new Date().toISOString();
+            document.getElementById('user-agent').textContent = navigator.userAgent.substring(0, 50) + '...';
+            document.getElementById('session-id').textContent = generateSessionId();
+        }
+        
+        function generateSessionId() {
+            return 'SES_' + Math.random().toString(36).substr(2, 9).toUpperCase();
+        }
+        
+        // Enhanced logging function
+        function logError(errorData) {
+            const logEntry = {
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                url: window.location.href,
+                sessionId: generateSessionId(),
+                errorMessage: errorData.message || 'Unknown error',
+                stackTrace: errorData.stack || 'No stack trace available'
+            };
+            
+            // Log to console for development
+            console.error('Enhanced Error Log:', logEntry);
+            
+            // In production, you would send this to your logging service
+            // sendToLoggingService(logEntry);
+            
+            return logEntry;
+        }
+        
+        // Button functions
+        function generateReport() {
+            const report = {
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                sessionId: document.getElementById('session-id').textContent,
+                url: window.location.href,
+                errorType: 'HTTP_500_INTERNAL_SERVER_ERROR'
+            };
+            
+            const reportStr = JSON.stringify(report, null, 2);
+            const blob = new Blob([reportStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `error_report_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            addLogEntry('[INFO] Error report generated and downloaded');
+        }
+        
+        function retryConnection() {
+            addLogEntry('[RETRY] Attempting to re-establish connection...');
+            setTimeout(() => {
+                addLogEntry('[SUCCESS] Connection retry initiated');
+                window.location.reload();
+            }, 2000);
+        }
+        
+        function addLogEntry(message) {
+            const logPanel = document.querySelector('.log-panel');
+            const typingCursor = document.getElementById('typing-cursor');
+            const newEntry = document.createElement('div');
+            newEntry.className = 'log-entry';
+            newEntry.textContent = message;
+            logPanel.insertBefore(newEntry, typingCursor);
+            logPanel.scrollTop = logPanel.scrollHeight;
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeSystemInfo();
+            
+            // Log the error
+            <% if (typeof error !== 'undefined' && error) { %>
+            logError({
+                message: '<%= message %>',
+                stack: '<%= error.stack %>'
+            });
+            <% } %>
+            
+            // Animate log entries
+            const logEntries = document.querySelectorAll('.log-entry:not(#typing-cursor)');
+            logEntries.forEach((entry, index) => {
+                entry.style.animationDelay = `${index * 0.2}s`;
+            });
+        });
+        
+        // Global error handler for additional logging
+        window.addEventListener('error', (event) => {
+            logError({
+                message: event.message,
+                stack: event.error ? event.error.stack : 'No stack trace',
+                filename: event.filename,
+                lineno: event.lineno,
+                colno: event.colno
+            });
+        });
+        
+        // Unhandled promise rejection handler
+        window.addEventListener('unhandledrejection', (event) => {
+            logError({
+                message: event.reason,
+                stack: event.reason.stack || 'Promise rejection'
+            });
+        });
+    </script>
+</body>
+</html>
