@@ -1,5 +1,8 @@
 <%- include('partials/head') %>
 <body class="bg-black text-green-400 font-mono overflow-x-hidden">
+    <!-- First, add this right after the opening <body> tag -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50"></div>
+
     <!-- Matrix Background -->
     <canvas id="matrix-bg" class="fixed inset-0 z-0 opacity-20"></canvas>
     
@@ -35,37 +38,30 @@
                                     <% } %>
                                 </div>
                             </div>
-                            <!-- Edit/Delete Buttons -->
-                            <div class="flex space-x-2">
-                                <button onclick="populateIntroForm()" class="px-4 py-2 bg-yellow-600/20 border border-yellow-500 text-yellow-400 rounded hover:bg-yellow-600/40">Edit</button>
-                                <form action="/admin/portfolio/intro" method="POST" onsubmit="return confirm('Delete intro?');">
-                                    <input type="hidden" name="_method" value="DELETE" />
-                                    <button type="submit" class="px-4 py-2 bg-red-600/20 border border-red-500 text-red-400 rounded hover:bg-red-600/40">Delete</button>
-                                </form>
-                            </div>
                             <% } %>
 
                             <!-- Add / Update Form -->
-                            <form id="intro-form" action="/admin/portfolio/intro" method="POST" enctype="multipart/form-data" class="space-y-4" onsubmit="return validateIntro()">
-                                <input type="hidden" name="_method" value="<%= intro ? 'PUT' : 'POST' %>" />
+                            <form id="intro-form" class="space-y-4">
                                 <div>
                                     <label class="block text-sm">Site Title / Logo Text<span class="text-red-500">*</span></label>
                                     <input type="text" name="siteTitle" value="<%= intro?.siteTitle || '' %>" required class="w-full bg-gray-800/60 border border-gray-700 rounded p-2 focus:outline-none focus:border-green-400" />
-                                </div>
-                                <div>
-                                    <label class="block text-sm">Logo Icon<span class="text-red-500">*</span></label>
-                                    <input type="file" name="logoIcon" accept="image/*" class="w-full bg-gray-800/60 border border-gray-700 rounded p-2" onchange="previewImage(event, 'intro-logo-preview')" />
-                                    <img id="intro-logo-preview" class="mt-2 w-20 h-20 object-contain hidden" />
                                 </div>
                                 <div>
                                     <label class="block text-sm">Your Name<span class="text-red-500">*</span></label>
                                     <input type="text" name="yourName" value="<%= intro?.yourName || '' %>" required class="w-full bg-gray-800/60 border border-gray-700 rounded p-2 focus:outline-none focus:border-green-400" />
                                 </div>
                                 <div>
-                                    <label class="block text-sm">System Roles (comma separated)<span class="text-red-500">*</span></label>
-                                    <input type="text" name="roles" value="<%= intro?.roles?.join(', ') || '' %>" required class="w-full bg-gray-800/60 border border-gray-700 rounded p-2 focus:outline-none focus:border-green-400" />
+                                    <label class="block text-sm">Roles (comma separated)<span class="text-red-500">*</span></label>
+                                    <input type="text" name="roles" value="<%= intro?.roles?.join(', ') || '' %>" required class="w-full bg-gray-800/60 border border-gray-700 rounded p-2 focus:outline-none focus:border-green-400" placeholder="e.g. Developer, Designer, Writer" />
                                 </div>
-                                <button type="submit" class="px-6 py-2 bg-green-600/20 border border-green-500 text-green-400 rounded hover:bg-green-600/40"> <%= intro ? 'Update Intro' : 'Add Intro' %> </button>
+                                <div>
+                                    <label class="block text-sm">Logo Icon<span class="text-red-500">*</span></label>
+                                    <input type="file" name="logoIcon" accept="image/*" class="w-full bg-gray-800/60 border border-gray-700 rounded p-2" onchange="previewImage(event, 'intro-logo-preview')" />
+                                    <img id="intro-logo-preview" class="mt-2 w-20 h-20 object-contain hidden" />
+                                </div>
+                                <button type="button" id="updateIntroBtn" class="px-6 py-2 bg-green-600/20 border border-green-500 text-green-400 rounded hover:bg-green-600/40">
+                                    <%= intro ? 'Update Intro' : 'Add Intro' %>
+                                </button>
                             </form>
                         </div>
                     </details>
@@ -108,8 +104,7 @@
                             <% } %>
 
                             <!-- Form -->
-                            <form id="about-form" action="/admin/portfolio/about" method="POST" enctype="multipart/form-data" class="space-y-4" onsubmit="return validateAbout()">
-                                <input type="hidden" name="_method" value="<%= about ? 'PUT' : 'POST' %>" />
+                            <form id="about-form" class="space-y-4">
                                 <div>
                                     <label class="block text-sm">Biography<span class="text-red-500">*</span></label>
                                     <textarea name="bio" rows="4" required class="w-full bg-gray-800/60 border border-gray-700 rounded p-2 focus:outline-none focus:border-green-400"><%= about?.bio || '' %></textarea>
@@ -124,13 +119,16 @@
                                     <% (about?.badges || [{badgeName:'',badgeIcon:''}]).forEach((b,i) => { %>
                                     <div class="flex items-center space-x-2 mb-2">
                                         <input type="text" name="badges[<%=i%>][badgeName]" value="<%= b.badgeName %>" placeholder="Badge Name" required class="bg-gray-800/60 border border-gray-700 rounded p-2 flex-1 focus:outline-none focus:border-green-400" />
-                                        <img id="badge-preview-<%=i%>" class="w-6 h-6 object-contain hidden" />
+                                        <input type="file" name="badges[<%=i%>][badgeIcon]" accept="image/*" onchange="previewImage(event,'badge-preview-<%=i%>')" required />
+                                        <img id="badge-preview-<%=i%>" src="/<%= b.badgeIcon %>" class="w-6 h-6 object-contain <%= b.badgeIcon ? '' : 'hidden' %>" />
                                         <button type="button" onclick="removeBadge(this)" class="text-red-500">×</button>
                                     </div>
                                     <% }) %>
                                 </div>
                                 <button type="button" onclick="addBadge()" class="text-cyan-400">+ Add Badge</button>
-                                <button type="submit" class="px-6 py-2 bg-green-600/20 border border-green-500 text-green-400 rounded hover:bg-green-600/40"> <%= about ? 'Update About' : 'Add About' %> </button>
+                                <button type="button" id="updateAboutBtn" class="px-6 py-2 bg-green-600/20 border border-green-500 text-green-400 rounded hover:bg-green-600/40">
+                                    <%= about ? 'Update About' : 'Add About' %>
+                                </button>
                             </form>
                         </div>
                     </details>
@@ -243,6 +241,7 @@
     <%- include('partials/footer') %>
 
     <!-- Scripts for Preview & Form Logic -->
+    <script src="/js/components/toast.js"></script>
     <script>
         // Image preview
         function previewImage(event, id) {
@@ -262,7 +261,26 @@
             document.getElementById('intro-form').scrollIntoView({ behavior: 'smooth' });
         }
         function validateIntro() {
-            return !!document.querySelector('#intro-form [name="siteTitle"]').value;
+            const form = document.getElementById('intro-form');
+            const requiredFields = ['siteTitle', 'yourName', 'roles'];
+            
+            for (const field of requiredFields) {
+                const input = form.querySelector(`[name="${field}"]`);
+                if (!input.value.trim()) {
+                    alert(`${field} is required`);
+                    input.focus();
+                    return false;
+                }
+            }
+            
+            // Validate roles
+            const roles = form.querySelector('[name="roles"]').value.split(',').map(role => role.trim());
+            if (roles.length === 0 || roles.some(role => !role)) {
+                alert('At least one role is required');
+                return false;
+            }
+            
+            return true;
         }
         // About logic
         function populateAboutForm() { document.getElementById('about-form').scrollIntoView({ behavior: 'smooth' }); }
@@ -361,5 +379,263 @@
             form.classList.remove('hidden'); form.scrollIntoView({ behavior: 'smooth' });
         }
         function validateBlog() { return !!document.querySelector('#blog-form [name="title"]').value; }
+
+        // Matrix-style typing effect
+        const matrixTyping = (text, element) => {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            let iterations = 0;
+            const maxIterations = 3;
+            
+            const interval = setInterval(() => {
+                element.innerHTML = text
+                    .split("")
+                    .map((char, index) => {
+                        if (index < iterations) {
+                            return text[index];
+                        }
+                        return chars[Math.floor(Math.random() * chars.length)];
+                    })
+                    .join("");
+                
+                if (iterations >= text.length) {
+                    clearInterval(interval);
+                }
+                
+                iterations += 1 / maxIterations;
+            }, 30);
+        };
+
+        // Show success toast
+        const showHackerSuccess = (title, text) => {
+            const toast = document.createElement('div');
+            toast.className = 'toast toast-success';
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <span class="toast-icon">[+]</span>
+                    <div>
+                        <div class="toast-message">${title}</div>
+                        <div id="matrix-text">${text}</div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('toast-container').appendChild(toast);
+            matrixTyping(text, toast.querySelector('#matrix-text'));
+            
+            // Remove toast after animation
+            setTimeout(() => {
+                toast.remove();
+            }, 5000);
+        };
+
+        // Show error toast
+        const showHackerError = (title, text) => {
+            const toast = document.createElement('div');
+            toast.className = 'toast toast-error';
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <span class="toast-icon">[!]</span>
+                    <div>
+                        <div class="toast-message">${title}</div>
+                        <div id="matrix-text">${text}</div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('toast-container').appendChild(toast);
+            matrixTyping(text, toast.querySelector('#matrix-text'));
+            
+            // Remove toast after animation
+            setTimeout(() => {
+                toast.remove();
+            }, 5000);
+        };
+
+        // Update the button click handler
+        document.getElementById('updateIntroBtn').addEventListener('click', async function(e) {
+            e.preventDefault();
+            
+            const form = document.getElementById('intro-form');
+            const formData = new FormData(form);
+            
+            // Validate form
+            const requiredFields = ['siteTitle', 'yourName', 'roles'];
+            for (const field of requiredFields) {
+                const input = form.querySelector(`[name="${field}"]`);
+                if (!input.value.trim()) {
+                    window.toast.error(
+                        'VALIDATION ERROR',
+                        `FIELD "${field.toUpperCase()}" REQUIRED`
+                    );
+                    input.focus();
+                    return;
+                }
+            }
+            
+            // Validate roles
+            const roles = form.querySelector('[name="roles"]').value.split(',').map(role => role.trim());
+            if (roles.length === 0 || roles.some(role => !role)) {
+                window.toast.error(
+                    'VALIDATION ERROR',
+                    'AT LEAST ONE ROLE REQUIRED'
+                );
+                return;
+            }
+            
+            try {
+                console.log('Sending request to /api/portfolio/intro');
+                const response = await fetch('/api/portfolio/intro', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                console.log('Response received:', response);
+                const result = await response.json();
+                console.log('Result:', result);
+                
+                if (response.ok) {
+                    window.toast.success(
+                        'OPERATION SUCCESSFUL',
+                        'INTRO DATA UPDATED SUCCESSFULLY'
+                    );
+                    // Reload the page after a short delay
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    window.toast.error(
+                        'OPERATION FAILED',
+                        result.message || 'UNKNOWN ERROR OCCURRED'
+                    );
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                window.toast.error(
+                    'SYSTEM ERROR',
+                    'FAILED TO COMMUNICATE WITH SERVER'
+                );
+            }
+        });
+
+        document.getElementById('updateAboutBtn').addEventListener('click', async function(e) {
+            e.preventDefault();
+            
+            const form = document.getElementById('about-form');
+            const formData = new FormData(form);
+            
+            // Validate form
+            const bio = form.querySelector('[name="bio"]');
+            if (!bio.value.trim()) {
+                window.toast.error(
+                    'VALIDATION ERROR',
+                    'BIOGRAPHY IS REQUIRED'
+                );
+                bio.focus();
+                return;
+            }
+            
+            try {
+                console.log('Sending request to /api/portfolio/about');
+                const response = await fetch('/api/portfolio/about', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                console.log('Response received:', response);
+                const result = await response.json();
+                console.log('Result:', result);
+                
+                if (response.ok) {
+                    window.toast.success(
+                        'OPERATION SUCCESSFUL',
+                        'ABOUT SECTION UPDATED SUCCESSFULLY'
+                    );
+                    // Reload the page after a short delay
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    window.toast.error(
+                        'OPERATION FAILED',
+                        result.message || 'UNKNOWN ERROR OCCURRED'
+                    );
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                window.toast.error(
+                    'SYSTEM ERROR',
+                    'FAILED TO COMMUNICATE WITH SERVER'
+                );
+            }
+        });
     </script>
+
+    <!-- Add this in the head section or before the closing </head> tag -->
+    <style>
+        @keyframes matrix-typing {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes matrix-fade {
+            0% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .toast {
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            position: relative;
+            overflow: hidden;
+            animation: matrix-typing 0.3s ease-out, matrix-fade 5s ease-in-out forwards;
+        }
+
+        .toast::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: currentColor;
+            animation: matrix-scan 2s linear infinite;
+        }
+
+        .toast-success {
+            border-color: #00ff00;
+            color: #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+
+        .toast-error {
+            border-color: #ff0000;
+            color: #ff0000;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+        }
+
+        @keyframes matrix-scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .toast-content {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toast-icon {
+            font-size: 1.2rem;
+        }
+
+        .toast-message {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+    </style>
 </body>

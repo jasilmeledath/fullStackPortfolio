@@ -1,4 +1,5 @@
 const User = require('../models/user.model');
+const { Portfolio, Category, Intro } = require('../models/portfolio.model');
 const HTTP_STATUS = require('../constants/httpStatus');
 const { getBlogPosts } = require('../services/medium.service');
 
@@ -12,16 +13,97 @@ const adminController = {
     },
 
     // Portfolio management
-    getPortfolio: (req, res) => {
-        res.render('admin/portfolio', {
-            title: 'Manage Portfolio',
-            user: req.session.user,
-            intro: null,
-            about: null,
-            projects: null,
-            skills: null,
-            posts: null
-        });
+    getPortfolio: async (req, res) => {
+        try {
+            // First verify that our models are properly imported
+            if (!Intro || !Portfolio || !Category) {
+                throw new Error('Required models are not properly imported');
+            }
+
+            // Fetch all necessary data with error handling for each query
+            const [intro, portfolio, categories] = await Promise.all([
+                Intro.findOne().exec(),
+                Portfolio.findOne()
+                    .populate('skills.category')
+                    .populate('blogs.category')
+                    .exec(),
+                Category.find().exec()
+            ]);
+
+            // Group skills by category
+            const groupedSkills = categories
+                .filter(cat => cat.type === 'skill')
+                .map(cat => ({
+                    category: cat.name,
+                    items: portfolio?.skills
+                        .filter(skill => skill.category._id.toString() === cat._id.toString())
+                        .map(skill => skill.name) || []
+                }));
+
+            // Group blogs by category
+            const groupedBlogs = categories
+                .filter(cat => cat.type === 'blog')
+                .map(cat => ({
+                    category: cat.name,
+                    items: portfolio?.blogs
+                        .filter(blog => blog.category._id.toString() === cat._id.toString())
+                        .map(blog => ({
+                            _id: blog._id,
+                            title: blog.title,
+                            content: blog.content,
+                            coverImage: blog.coverImage,
+                            published: blog.published,
+                            publishedAt: blog.publishedAt,
+                            tags: blog.tags
+                        })) || []
+                }));
+
+            // Format about section data
+            const about = portfolio ? {
+                bio: portfolio.aboutMe,
+                avatar: portfolio.avatar,
+                badges: portfolio.badges || []
+            } : null;
+
+            // Format projects data
+            const projects = portfolio?.projects.map(project => ({
+                _id: project._id,
+                title: project.title,
+                caption: project.caption,
+                description: project.description,
+                coverImageUrl: project.coverImageUrl,
+                repoLink: project.repoLink,
+                techBadges: project.techBadges || []
+            })) || [];
+
+            res.render('admin/portfolio', {
+                title: 'Manage Portfolio',
+                user: req.session.user,
+                intro,
+                about,
+                projects,
+                skills: groupedSkills,
+                posts: groupedBlogs,
+                categories: {
+                    skills: categories.filter(cat => cat.type === 'skill'),
+                    blogs: categories.filter(cat => cat.type === 'blog')
+                }
+            });
+        } catch (error) {
+            console.error('Error fetching portfolio data:', error);
+            // Render the page with error state
+            res.render('admin/portfolio', {
+                title: 'Manage Portfolio',
+                user: req.session.user,
+                intro: null,
+                about: null,
+                projects: [],
+                skills: [],
+                posts: [],
+                categories: { skills: [], blogs: [] },
+                error: 'Failed to load portfolio data'
+            });
+        }
     },
 
     // Blog management

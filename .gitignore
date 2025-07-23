@@ -1,36 +1,24 @@
-# Dependencies
+# Node modules
 node_modules/
-npm-debug.log
-yarn-debug.log
-yarn-error.log
+
+# OS files
+.DS_Store
+
+# Logs
+npm-debug.log*
+*.log
 
 # Environment variables
 .env
-.env.local
-.env.*.local
 
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
+# User uploads
+src/public/uploads/
 
-# OS
-.DS_Store
-Thumbs.db
+# FontAwesome vendor files
+src/public/css/fontawesome/
 
-# Logs
-logs/
-*.log
+# Build artifacts (if you use a build process)
+src/public/css/tailwind.css
 
-# Build
-dist/
-build/
-
-# Coverage
-coverage/
-
-# Temporary files
-*.tmp
-*.temp
-.cache/ 
+# Optional: Ignore built JS if you ever build it
+# src/public/js/main.js

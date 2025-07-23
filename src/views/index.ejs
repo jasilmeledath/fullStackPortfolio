@@ -1,1579 +1,1040 @@
 <!DOCTYPE html>
-<html lang="en" class="dark scroll-smooth">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberDev Portfolio - <%= user?.name || 'Anonymous' %></title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="/css/home.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <title>Deepak Sivan - Cybersecurity Analyst & Security Engineer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <style>
-    /* Custom CSS for cyberpunk hacker portfolio */
-
-@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Fira+Code:wght@300;400;500;600&display=swap");
-
-:root {
-  --neon-green: #00ff41;
-  --neon-cyan: #00ffff;
-  --neon-purple: #bf00ff;
-  --neon-pink: #ff0080;
-  --dark-bg: #0a0a0a;
-  --darker-bg: #050505;
-}
-
-* {
-  font-family: "Fira Code", monospace;
-}
-
-.font-orbitron {
-  font-family: "Orbitron", monospace;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--darker-bg);
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(45deg, var(--neon-cyan), var(--neon-purple));
-  border-radius: 4px;
-}
-
-/* Intro Terminal Styles */
-.intro-terminal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.95);
-  backdrop-filter: blur(10px);
-  z-index: 10000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.5s ease;
-}
-
-.intro-terminal-overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
-
-.intro-terminal {
-  width: 95%;
-  max-width: 900px;
-  background: #000000;
-  border: 2px solid var(--neon-cyan);
-  border-radius: 8px;
-  overflow: hidden;
-  transform: scale(0.8) translateY(50px);
-  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 0 0 rgba(0, 255, 255, 0);
-}
-
-.intro-terminal-overlay.active .intro-terminal {
-  transform: scale(1) translateY(0);
-  box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
-}
-
-.intro-terminal-header {
-  background: #1a1a1a;
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--neon-cyan);
-}
-
-.intro-terminal-buttons {
-  display: flex;
-  gap: 8px;
-}
-
-.intro-terminal-btn {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.intro-terminal-btn.red { background: #ff5f56; }
-.intro-terminal-btn.yellow { background: #ffbd2e; }
-.intro-terminal-btn.green { background: #27ca3f; }
-
-.intro-terminal-title {
-  color: var(--neon-cyan);
-  font-size: 14px;
-  font-weight: 500;
-  font-family: "Fira Code", monospace;
-}
-
-.intro-terminal-content {
-  padding: 40px 30px;
-  min-height: 400px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.intro-name-container {
-  margin-bottom: 40px;
-}
-
-.intro-name {
-  font-size: clamp(2.5rem, 8vw, 5rem);
-  font-weight: 900;
-  font-family: "Orbitron", monospace;
-  color: var(--neon-cyan);
-  text-transform: uppercase;
-  letter-spacing: -2px;
-  line-height: 1.1;
-  position: relative;
-  text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-}
-
-.intro-name.glitch {
-  animation: intro-glitch 0.3s ease-in-out;
-}
-
-.intro-roles {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.intro-roles-title {
-  color: var(--neon-green);
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.5s ease;
-}
-
-.intro-roles-title.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.intro-role-item {
-  color: #e5e7eb;
-  font-size: 16px;
-  font-weight: 400;
-  margin-bottom: 12px;
-  opacity: 0;
-  transform: translateX(-30px);
-  transition: all 0.5s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-}
-
-.intro-role-item.visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.intro-role-bullet {
-  color: var(--neon-purple);
-  font-weight: bold;
-}
-
-.intro-continue {
-  position: absolute;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #6b7280;
-  font-size: 14px;
-  opacity: 0;
-  animation: intro-fade-in 1s ease forwards;
-  animation-delay: 4s;
-}
-
-.intro-continue.blink {
-  animation: intro-blink 1s infinite;
-}
-
-/* Intro Terminal Animations */
-@keyframes intro-glitch {
-  0%, 100% { transform: translate(0); }
-  10% { transform: translate(-2px, -2px); }
-  20% { transform: translate(2px, 2px); }
-  30% { transform: translate(-2px, 2px); }
-  40% { transform: translate(2px, -2px); }
-  50% { transform: translate(-2px, -2px); }
-  60% { transform: translate(2px, 2px); }
-  70% { transform: translate(-2px, 2px); }
-  80% { transform: translate(2px, -2px); }
-  90% { transform: translate(-2px, -2px); }
-}
-
-@keyframes intro-fade-in {
-  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
-  to { opacity: 1; transform: translateX(-50%) translateY(0); }
-}
-
-@keyframes intro-blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0.3; }
-}
-
-/* Mobile Responsive for Intro Terminal */
-@media (max-width: 768px) {
-  .intro-terminal {
-    width: 98%;
-    margin: 10px;
-  }
-  
-  .intro-terminal-content {
-    padding: 30px 20px;
-    min-height: 350px;
-  }
-  
-  .intro-name {
-    font-size: clamp(2rem, 10vw, 3.5rem);
-    letter-spacing: -1px;
-  }
-  
-  .intro-roles-title {
-    font-size: 16px;
-  }
-  
-  .intro-role-item {
-    font-size: 14px;
-    margin-bottom: 10px;
-  }
-}
-
-@media (max-width: 480px) {
-  .intro-terminal-content {
-    padding: 25px 15px;
-    min-height: 300px;
-  }
-  
-  .intro-name {
-    font-size: clamp(1.8rem, 12vw, 3rem);
-  }
-  
-  .intro-roles-title {
-    font-size: 15px;
-    margin-bottom: 15px;
-  }
-  
-  .intro-role-item {
-    font-size: 13px;
-    margin-bottom: 8px;
-  }
-}
-
-/* Cursor Trail */
-#cursor-trail {
-  position: fixed;
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--neon-cyan);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  box-shadow: 0 0 20px var(--neon-cyan);
-}
-
-/* Navigation */
-.nav-link {
-  position: relative;
-  color: #9ca3af;
-  transition: all 0.3s ease;
-  padding: 0.5rem 1rem;
-  border: 1px solid transparent;
-}
-
-.nav-link:hover {
-  color: var(--neon-cyan);
-  text-shadow: 0 0 10px var(--neon-cyan);
-  border-color: var(--neon-cyan);
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-}
-
-.mobile-nav-link {
-  font-size: 1.5rem;
-  color: #9ca3af;
-  transition: all 0.3s ease;
-  padding: 1rem;
-  border: 1px solid transparent;
-  border-radius: 0.5rem;
-}
-
-.mobile-nav-link:hover {
-  color: var(--neon-cyan);
-  text-shadow: 0 0 10px var(--neon-cyan);
-  border-color: var(--neon-cyan);
-  background: rgba(0, 255, 255, 0.1);
-}
-
-/* Glitch Effect */
-.glitch-text {
-  position: relative;
-  animation: glitch 2s infinite;
-}
-
-.glitch-text::before,
-.glitch-text::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.glitch-text::before {
-  animation: glitch-1 0.5s infinite;
-  color: var(--neon-pink);
-  z-index: -1;
-}
-
-.glitch-text::after {
-  animation: glitch-2 0.5s infinite;
-  color: var(--neon-cyan);
-  z-index: -2;
-}
-
-@keyframes glitch {
-  0%,
-  100% {
-    transform: translate(0);
-  }
-  20% {
-    transform: translate(-2px, 2px);
-  }
-  40% {
-    transform: translate(-2px, -2px);
-  }
-  60% {
-    transform: translate(2px, 2px);
-  }
-  80% {
-    transform: translate(2px, -2px);
-  }
-}
-
-@keyframes glitch-1 {
-  0%,
-  100% {
-    transform: translate(0);
-  }
-  10% {
-    transform: translate(-2px, -2px);
-  }
-  20% {
-    transform: translate(2px, 2px);
-  }
-  30% {
-    transform: translate(-2px, 2px);
-  }
-  40% {
-    transform: translate(2px, -2px);
-  }
-  50% {
-    transform: translate(-2px, -2px);
-  }
-  60% {
-    transform: translate(2px, 2px);
-  }
-  70% {
-    transform: translate(-2px, 2px);
-  }
-  80% {
-    transform: translate(2px, -2px);
-  }
-  90% {
-    transform: translate(-2px, -2px);
-  }
-}
-
-@keyframes glitch-2 {
-  0%,
-  100% {
-    transform: translate(0);
-  }
-  10% {
-    transform: translate(2px, 2px);
-  }
-  20% {
-    transform: translate(-2px, -2px);
-  }
-  30% {
-    transform: translate(2px, -2px);
-  }
-  40% {
-    transform: translate(-2px, 2px);
-  }
-  50% {
-    transform: translate(2px, 2px);
-  }
-  60% {
-    transform: translate(-2px, -2px);
-  }
-  70% {
-    transform: translate(2px, -2px);
-  }
-  80% {
-    transform: translate(-2px, 2px);
-  }
-  90% {
-    transform: translate(2px, 2px);
-  }
-}
-
-/* Modern Logo Text Effect */
-.modern-logo-text {
-  display: inline-block;
-  font-size: 0.6em;
-  font-weight: 400;
-  color: #e5e7eb;
-  text-transform: none;
-  letter-spacing: 2px;
-  position: relative;
-  margin-bottom: 0.5rem;
-  animation: subtle-pulse 3s ease-in-out infinite;
-}
-
-.modern-logo-text::after {
-  content: "";
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
-  animation: underline-expand 2s ease-out forwards;
-  box-shadow: 0 0 10px var(--neon-cyan);
-}
-
-.modern-logo-name {
-  display: inline-block;
-  background: linear-gradient(
-    135deg,
-    #ffffff 0%,
-    var(--neon-cyan) 25%,
-    var(--neon-purple) 50%,
-    var(--neon-pink) 75%,
-    #ffffff 100%
-  );
-  background-size: 300% 300%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: gradient-flow 4s ease-in-out infinite, logo-glow 2s ease-in-out infinite alternate;
-  text-shadow: none;
-  position: relative;
-  font-weight: 900;
-  letter-spacing: -2px;
-}
-
-.modern-logo-name::before {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    135deg,
-    transparent 0%,
-    rgba(0, 255, 255, 0.1) 25%,
-    rgba(191, 0, 255, 0.1) 50%,
-    rgba(255, 0, 128, 0.1) 75%,
-    transparent 100%
-  );
-  background-size: 300% 300%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: gradient-flow 4s ease-in-out infinite reverse;
-  z-index: -1;
-}
-
-/* Modern Logo Animations */
-@keyframes subtle-pulse {
-  0%,
-  100% {
-    opacity: 0.8;
-    transform: translateY(0);
-  }
-  50% {
-    opacity: 1;
-    transform: translateY(-2px);
-  }
-}
-
-@keyframes underline-expand {
-  0% {
-    width: 0;
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    width: 100%;
-    opacity: 0.8;
-  }
-}
-
-@keyframes gradient-flow {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  25% {
-    background-position: 100% 0%;
-  }
-  50% {
-    background-position: 200% 50%;
-  }
-  75% {
-    background-position: 100% 100%;
-  }
-}
-
-@keyframes logo-glow {
-  0% {
-    filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.3));
-  }
-  100% {
-    filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.6)) drop-shadow(0 0 30px rgba(191, 0, 255, 0.4));
-  }
-}
-
-/* Enhanced glitch effect for the name */
-.modern-logo-name.glitch-text::before {
-  animation: glitch-1 0.5s infinite, gradient-flow 4s ease-in-out infinite reverse;
-  background: linear-gradient(135deg, #ff0080, transparent, #ff0080);
-  background-size: 300% 300%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  opacity: 0.7;
-}
-
-.modern-logo-name.glitch-text::after {
-  animation: glitch-2 0.5s infinite, gradient-flow 4s ease-in-out infinite;
-  background: linear-gradient(135deg, #00ffff, transparent, #00ffff);
-  background-size: 300% 300%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  opacity: 0.7;
-}
-
-/* Responsive adjustments for modern logo */
-@media (max-width: 768px) {
-  .modern-logo-text {
-    font-size: 0.7em;
-    letter-spacing: 1px;
-  }
-
-  .modern-logo-name {
-    letter-spacing: -1px;
-  }
-
-  .modern-logo-name.glitch-text::before,
-  .modern-logo-name.glitch-text::after {
-    display: none;
-  }
-}
-
-@media (max-width: 640px) {
-  .modern-logo-text {
-    font-size: 0.8em;
-    margin-bottom: 0.25rem;
-  }
-
-  .modern-logo-name {
-    letter-spacing: 0;
-  }
-}
-
-/* Typing Effect */
-.cursor-blink {
-  animation: blink 1s infinite;
-}
-
-@keyframes blink {
-  0%,
-  50% {
-    opacity: 1;
-  }
-  51%,
-  100% {
-    opacity: 0;
-  }
-}
-
-/* Buttons */
-.cyber-btn {
-  position: relative;
-  padding: 0.75rem 2rem;
-  background: transparent;
-  border: 2px solid;
-  color: inherit;
-  font-family: "Fira Code", monospace;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: all 0.3s ease;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-.cyber-btn::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s;
-}
-
-.cyber-btn:hover::before {
-  left: 100%;
-}
-
-.cyber-btn.primary {
-  border-color: var(--neon-cyan);
-  color: var(--neon-cyan);
-}
-
-.cyber-btn.primary:hover {
-  background: rgba(0, 255, 255, 0.1);
-  box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
-  text-shadow: 0 0 10px var(--neon-cyan);
-}
-
-.cyber-btn.secondary {
-  border-color: var(--neon-purple);
-  color: var(--neon-purple);
-}
-
-.cyber-btn.secondary:hover {
-  background: rgba(191, 0, 255, 0.1);
-  box-shadow: 0 0 30px rgba(191, 0, 255, 0.5);
-  text-shadow: 0 0 10px var(--neon-purple);
-}
-
-/* Section Titles */
-.section-title {
-  font-size: 2.5rem;
-  font-weight: 900;
-  font-family: "Orbitron", monospace;
-  text-transform: uppercase;
-  background: linear-gradient(45deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink));
-  background-size: 200% 200%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradient-shift 3s ease infinite;
-}
-
-.section-line {
-  width: 100px;
-  height: 2px;
-  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
-  margin: 1rem auto;
-  position: relative;
-}
-
-.section-line::after {
-  content: "";
-  position: absolute;
-  top: -1px;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
-  filter: blur(2px);
-  opacity: 0.7;
-}
-
-@keyframes gradient-shift {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-/* Cards */
-.cyber-card {
-  background: rgba(10, 10, 10, 0.8);
-  border: 1px solid rgba(0, 255, 255, 0.3);
-  border-radius: 0.5rem;
-  padding: 2rem;
-  backdrop-filter: blur(10px);
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.cyber-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-  animation: scan-line 2s linear infinite;
-}
-
-.cyber-card:hover {
-  border-color: var(--neon-cyan);
-  box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
-  transform: translateY(-5px);
-}
-
-@keyframes scan-line {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-/* Avatar */
-.avatar-container {
-  display: flex;
-  justify-content: center;
-}
-
-.avatar-frame {
-  position: relative;
-  width: 200px;
-  height: 200px;
-  border: 2px solid var(--neon-cyan);
-  border-radius: 50%;
-  padding: 4px;
-  background: linear-gradient(45deg, var(--neon-cyan), var(--neon-purple));
-}
-
-.avatar-img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-  filter: grayscale(100%) contrast(120%);
-  transition: filter 0.3s ease;
-}
-
-.avatar-frame:hover .avatar-img {
-  filter: grayscale(0%) contrast(100%);
-}
-
-/* .avatar-scan {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 50%;
-  background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.3), transparent);
-  animation: avatar-scan 3s ease-in-out infinite;
-} */
-
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes avatar-scan {
-  0%,
-  100% {
-    opacity: 0;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.1);
-  }
-}
-
-/* Skill Tags */
-.skill-tag {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  background: rgba(0, 255, 255, 0.1);
-  border: 1px solid var(--neon-cyan);
-  border-radius: 1rem;
-  color: var(--neon-cyan);
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* Terminal Window */
-.terminal-window {
-  background: #000;
-  border: 1px solid var(--neon-green);
-  border-radius: 0.5rem;
-  overflow: hidden;
-  box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
-}
-
-.terminal-header {
-  background: #1a1a1a;
-  padding: 0.75rem 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--neon-green);
-}
-
-.terminal-buttons {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.terminal-btn {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
-.terminal-btn.red {
-  background: #ff5f56;
-}
-.terminal-btn.yellow {
-  background: #ffbd2e;
-}
-.terminal-btn.green {
-  background: #27ca3f;
-}
-
-.terminal-title {
-  color: var(--neon-green);
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.terminal-content {
-  padding: 1rem;
-  color: var(--neon-green);
-  font-family: "Fira Code", monospace;
-}
-
-/* Project Cards */
-.project-card {
-  background: rgba(10, 10, 10, 0.9);
-  border: 1px solid rgba(191, 0, 255, 0.3);
-  border-radius: 0.5rem;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.project-card:hover {
-  border-color: var(--neon-purple);
-  box-shadow: 0 0 30px rgba(191, 0, 255, 0.3);
-  transform: translateY(-10px);
-}
-
-.project-image {
-  position: relative;
-  overflow: hidden;
-  height: 200px;
-}
-
-.project-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: grayscale(100%) contrast(120%);
-  transition: all 0.3s ease;
-}
-
-.project-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.project-card:hover .project-overlay {
-  opacity: 1;
-}
-
-.project-card:hover .project-image img {
-  filter: grayscale(0%) contrast(100%);
-  transform: scale(1.1);
-}
-
-.project-btn {
-  padding: 0.5rem 1rem;
-  background: transparent;
-  border: 1px solid var(--neon-purple);
-  color: var(--neon-purple);
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.project-btn:hover {
-  background: rgba(191, 0, 255, 0.2);
-  box-shadow: 0 0 20px rgba(191, 0, 255, 0.5);
-}
-
-.project-content {
-  padding: 1.5rem;
-}
-
-.project-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--neon-purple);
-  margin-bottom: 0.5rem;
-  font-family: "Orbitron", monospace;
-}
-
-.project-description {
-  color: #9ca3af;
-  margin-bottom: 1rem;
-  line-height: 1.6;
-}
-
-.project-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.project-tag {
-  padding: 0.25rem 0.5rem;
-  background: rgba(191, 0, 255, 0.1);
-  border: 1px solid var(--neon-purple);
-  border-radius: 0.25rem;
-  color: var(--neon-purple);
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-/* Skills */
-.skill-category {
-  background: rgba(10, 10, 10, 0.8);
-  border: 1px solid rgba(0, 255, 65, 0.3);
-  border-radius: 0.5rem;
-  padding: 2rem;
-  transition: all 0.3s ease;
-}
-
-.skill-category:hover {
-  border-color: var(--neon-green);
-  box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
-}
-
-.skill-category-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  color: var(--neon-green);
-  font-family: "Orbitron", monospace;
-}
-
-.skill-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-}
-
-.skill-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.25rem;
-  transition: all 0.3s ease;
-}
-
-.skill-item:hover {
-  border-color: var(--neon-green);
-  background: rgba(0, 255, 65, 0.1);
-  transform: translateX(5px);
-}
-
-.skill-item i {
-  font-size: 1.5rem;
-}
-
-.skill-item span {
-  color: #e5e7eb;
-  font-weight: 500;
-}
-
-/* Blog Cards */
-.blog-card {
-  background: rgba(10, 10, 10, 0.9);
-  border: 1px solid rgba(0, 255, 255, 0.3);
-  border-radius: 0.5rem;
-  padding: 2rem;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.blog-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-  transition: left 0.5s ease;
-}
-
-.blog-card:hover::before {
-  left: 100%;
-}
-
-.blog-card:hover {
-  border-color: var(--neon-cyan);
-  box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
-  transform: translateY(-5px);
-}
-
-.blog-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.blog-date {
-  color: var(--neon-cyan);
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.blog-category {
-  padding: 0.25rem 0.5rem;
-  background: rgba(0, 255, 255, 0.1);
-  border: 1px solid var(--neon-cyan);
-  border-radius: 0.25rem;
-  color: var(--neon-cyan);
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.blog-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #e5e7eb;
-  margin-bottom: 1rem;
-  font-family: "Orbitron", monospace;
-}
-
-.blog-excerpt {
-  color: #9ca3af;
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
-}
-
-.blog-link {
-  color: var(--neon-cyan);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: all 0.3s ease;
-}
-
-.blog-link:hover {
-  text-shadow: 0 0 10px var(--neon-cyan);
-}
-
-/* Terminal Container */
-.terminal-container {
-  background: #000;
-  border: 2px solid var(--neon-green);
-  border-radius: 0.5rem;
-  overflow: hidden;
-  box-shadow: 0 0 40px rgba(0, 255, 65, 0.3);
-}
-
-.terminal-body {
-  padding: 2rem;
-  min-height: 400px;
-}
-
-/* Scan Status */
-.scan-status {
-  margin-bottom: 2rem;
-}
-
-.scan-line {
-  margin-bottom: 0.5rem;
-  opacity: 0;
-  animation: fadeInUp 0.5s ease forwards;
-}
-
-.scan-line:nth-child(1) {
-  animation-delay: 0.5s;
-}
-.scan-line:nth-child(2) {
-  animation-delay: 1s;
-}
-.scan-line:nth-child(3) {
-  animation-delay: 1.5s;
-}
-
-.scan-progress {
-  margin-top: 1rem;
-  opacity: 0;
-  animation: fadeInUp 0.5s ease forwards;
-  animation-delay: 2s;
-}
-
-.progress-bar {
-  width: 100%;
-  height: 4px;
-  background: #333;
-  border-radius: 2px;
-  overflow: hidden;
-  margin-bottom: 0.5rem;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan));
-  width: 0%;
-  transition: width 0.3s ease;
-  box-shadow: 0 0 10px var(--neon-green);
-}
-
-.progress-text {
-  color: var(--neon-green);
-  font-size: 0.875rem;
-}
-
-/* Visitor Data */
-.visitor-data {
-  opacity: 0;
-  animation: fadeInUp 0.5s ease forwards;
-}
-
-.data-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.data-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem;
-  background: rgba(0, 255, 65, 0.05);
-  border: 1px solid rgba(0, 255, 65, 0.2);
-  border-radius: 0.25rem;
-  transition: all 0.3s ease;
-}
-
-.data-item:hover {
-  border-color: var(--neon-green);
-  background: rgba(0, 255, 65, 0.1);
-}
-
-.data-label {
-  color: var(--neon-cyan);
-  font-weight: 500;
-  text-transform: uppercase;
-  font-size: 0.875rem;
-}
-
-.data-value {
-  color: var(--neon-green);
-  font-weight: 600;
-  text-align: right;
-}
-
-.terminal-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin-bottom: 2rem;
-}
-
-.terminal-disclaimer {
-  text-align: center;
-  color: #6b7280;
-  font-size: 0.75rem;
-  padding-top: 1rem;
-  border-top: 1px solid #374151;
-}
-
-/* Social Links */
-.social-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  color: #9ca3af;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.social-link:hover {
-  border-color: var(--neon-cyan);
-  color: var(--neon-cyan);
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-  transform: translateY(-2px);
-}
-
-/* Animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .section-title {
-    font-size: 2rem;
-  }
-
-  .data-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .skill-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .terminal-actions {
-    flex-direction: column;
-  }
-
-  .glitch-text::before,
-  .glitch-text::after {
-    display: none;
-  }
-}
-
-@media (max-width: 640px) {
-  .cyber-btn {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-  }
-
-  .avatar-frame {
-    width: 150px;
-    height: 150px;
-  }
-}
-
+    /* CSS Reset and Base Styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    :root {
+        /* Color Palette */
+        --cyber-primary: #0ea5e9;
+        --cyber-secondary: #0284c7;
+        --cyber-accent: #38bdf8;
+        --dark-bg: #0f172a;
+        --dark-card: #1e293b;
+        --dark-border: #334155;
+        --dark-lighter: #475569;
+        --text-primary: #f8fafc;
+        --text-secondary: #cbd5e1;
+        --text-muted: #94a3b8;
+        --accent-green: #10b981;
+        --accent-red: #ef4444;
+        --accent-orange: #f59e0b;
+        
+        /* Spacing */
+        --spacing-xs: 0.25rem;
+        --spacing-sm: 0.5rem;
+        --spacing-md: 1rem;
+        --spacing-lg: 1.5rem;
+        --spacing-xl: 2rem;
+        --spacing-2xl: 3rem;
+        
+        /* Border Radius */
+        --radius-sm: 0.375rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 0.75rem;
+        --radius-xl: 1rem;
+        --radius-2xl: 1.5rem;
+        
+        /* Shadows */
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        
+        /* Transitions */
+        --transition-fast: 0.15s ease-out;
+        --transition-normal: 0.3s ease-out;
+        --transition-slow: 0.5s ease-out;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: 'Inter', system-ui, sans-serif;
+        background: var(--dark-bg);
+        color: var(--text-primary);
+        line-height: 1.6;
+        overflow-x: hidden;
+        min-height: 100vh;
+    }
+
+    /* Typography */
+    .font-mono {
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .text-xs { font-size: 0.75rem; }
+    .text-sm { font-size: 0.875rem; }
+    .text-base { font-size: 1rem; }
+    .text-lg { font-size: 1.125rem; }
+    .text-xl { font-size: 1.25rem; }
+    .text-2xl { font-size: 1.5rem; }
+    .text-3xl { font-size: 1.875rem; }
+    .text-4xl { font-size: 2.25rem; }
+
+    .font-light { font-weight: 300; }
+    .font-normal { font-weight: 400; }
+    .font-medium { font-weight: 500; }
+    .font-semibold { font-weight: 600; }
+    .font-bold { font-weight: 700; }
+
+    /* Layout Utilities */
+    .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 var(--spacing-md);
+    }
+
+    .flex { display: flex; }
+    .grid { display: grid; }
+    .block { display: block; }
+    .inline-block { display: inline-block; }
+    .hidden { display: none; }
+
+    .items-center { align-items: center; }
+    .items-start { align-items: flex-start; }
+    .justify-center { justify-content: center; }
+    .justify-between { justify-content: space-between; }
+    .justify-start { justify-content: flex-start; }
+
+    .flex-col { flex-direction: column; }
+    .flex-wrap { flex-wrap: wrap; }
+    .flex-1 { flex: 1; }
+
+    .w-full { width: 100%; }
+    .h-full { height: 100%; }
+    .min-h-screen { min-height: 100vh; }
+
+    /* Grid System */
+    .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    @media (min-width: 768px) {
+        .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .md\:flex { display: flex; }
+        .md\:hidden { display: none; }
+        .md\:block { display: block; }
+        .md\:flex-row { flex-direction: row; }
+        .md\:text-left { text-align: left; }
+        .md\:justify-start { justify-content: flex-start; }
+    }
+
+    @media (min-width: 1024px) {
+        .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    /* Spacing */
+    .p-1 { padding: var(--spacing-xs); }
+    .p-2 { padding: var(--spacing-sm); }
+    .p-3 { padding: 0.75rem; }
+    .p-4 { padding: var(--spacing-md); }
+    .p-6 { padding: var(--spacing-lg); }
+    .p-8 { padding: var(--spacing-xl); }
+
+    .px-2 { padding-left: var(--spacing-sm); padding-right: var(--spacing-sm); }
+    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+    .px-4 { padding-left: var(--spacing-md); padding-right: var(--spacing-md); }
+    .px-6 { padding-left: var(--spacing-lg); padding-right: var(--spacing-lg); }
+    .px-8 { padding-left: var(--spacing-xl); padding-right: var(--spacing-xl); }
+
+    .py-2 { padding-top: var(--spacing-sm); padding-bottom: var(--spacing-sm); }
+    .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+    .py-4 { padding-top: var(--spacing-md); padding-bottom: var(--spacing-md); }
+    .py-6 { padding-top: var(--spacing-lg); padding-bottom: var(--spacing-lg); }
+    .py-12 { padding-top: var(--spacing-2xl); padding-bottom: var(--spacing-2xl); }
+    .py-20 { padding-top: 5rem; padding-bottom: 5rem; }
+
+    .pt-16 { padding-top: 4rem; }
+    .pt-4 { padding-top: var(--spacing-md); }
+    .pt-6 { padding-top: var(--spacing-lg); }
+    .pt-8 { padding-top: var(--spacing-xl); }
+
+    .pb-4 { padding-bottom: var(--spacing-md); }
+    .pb-6 { padding-bottom: var(--spacing-lg); }
+
+    .m-0 { margin: 0; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .my-8 { margin-top: var(--spacing-xl); margin-bottom: var(--spacing-xl); }
+
+    .mb-2 { margin-bottom: var(--spacing-sm); }
+    .mb-4 { margin-bottom: var(--spacing-md); }
+    .mb-6 { margin-bottom: var(--spacing-lg); }
+    .mb-8 { margin-bottom: var(--spacing-xl); }
+    .mb-12 { margin-bottom: var(--spacing-2xl); }
+    .mb-16 { margin-bottom: 4rem; }
+
+    .mr-1 { margin-right: 0.25rem; }
+    .mr-2 { margin-right: var(--spacing-sm); }
+    .mr-3 { margin-right: 0.75rem; }
+    .mr-4 { margin-right: var(--spacing-md); }
+    .ml-1 { margin-left: 0.25rem; }
+    .ml-2 { margin-left: var(--spacing-sm); }
+
+    .mt-8 { margin-top: var(--spacing-xl); }
+
+    /* Gaps */
+    .gap-2 { gap: var(--spacing-sm); }
+    .gap-3 { gap: 0.75rem; }
+    .gap-4 { gap: var(--spacing-md); }
+    .gap-6 { gap: var(--spacing-lg); }
+    .gap-8 { gap: var(--spacing-xl); }
+    .gap-12 { gap: var(--spacing-2xl); }
+
+    .space-x-1 > * + * { margin-left: 0.25rem; }
+    .space-x-2 > * + * { margin-left: var(--spacing-sm); }
+    .space-x-3 > * + * { margin-left: 0.75rem; }
+    .space-x-4 > * + * { margin-left: var(--spacing-md); }
+    .space-x-8 > * + * { margin-left: var(--spacing-xl); }
+
+    .space-y-2 > * + * { margin-top: var(--spacing-sm); }
+    .space-y-4 > * + * { margin-top: var(--spacing-md); }
+    .space-y-6 > * + * { margin-top: var(--spacing-lg); }
+
+    /* Colors */
+    .text-white { color: #ffffff; }
+    .text-gray-300 { color: #d1d5db; }
+    .text-gray-400 { color: var(--text-muted); }
+    .text-gray-500 { color: #6b7280; }
+    .cyber-text { color: var(--cyber-primary); }
+    .text-green { color: var(--accent-green); }
+    .text-red { color: var(--accent-red); }
+
+    .bg-transparent { background-color: transparent; }
+
+    /* Borders */
+    .border { border: 1px solid var(--dark-border); }
+    .border-t { border-top: 1px solid var(--dark-border); }
+    .border-2 { border: 2px solid; }
+    .border-cyber { border-color: var(--cyber-primary); }
+
+    .rounded { border-radius: var(--radius-sm); }
+    .rounded-md { border-radius: var(--radius-md); }
+    .rounded-lg { border-radius: var(--radius-lg); }
+    .rounded-xl { border-radius: var(--radius-xl); }
+    .rounded-2xl { border-radius: var(--radius-2xl); }
+    .rounded-full { border-radius: 9999px; }
+
+    /* Positioning */
+    .relative { position: relative; }
+    .absolute { position: absolute; }
+    .fixed { position: fixed; }
+    .top-0 { top: 0; }
+    .left-0 { left: 0; }
+    .right-0 { right: 0; }
+    .bottom-0 { bottom: 0; }
+    .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+
+    .z-0 { z-index: 0; }
+    .z-10 { z-index: 10; }
+    .z-50 { z-index: 50; }
+
+    .-bottom-2 { bottom: -0.5rem; }
+    .-right-2 { right: -0.5rem; }
+
+    /* Sizing */
+    .w-8 { width: 2rem; }
+    .w-10 { width: 2.5rem; }
+    .w-12 { width: 3rem; }
+    .w-16 { width: 4rem; }
+    .w-24 { width: 6rem; }
+    .w-32 { width: 8rem; }
+    .w-40 { width: 10rem; }
+
+    .h-8 { height: 2rem; }
+    .h-10 { height: 2.5rem; }
+    .h-12 { height: 3rem; }
+    .h-16 { height: 4rem; }
+    .h-24 { height: 6rem; }
+    .h-32 { height: 8rem; }
+    .h-40 { height: 10rem; }
+
+    .max-w-md { max-width: 28rem; }
+    .max-w-2xl { max-width: 42rem; }
+    .max-w-4xl { max-width: 56rem; }
+    .max-w-6xl { max-width: 72rem; }
+
+    /* Text Alignment */
+    .text-center { text-align: center; }
+    .text-left { text-align: left; }
+
+    /* Responsive Text Sizes */
+    @media (min-width: 640px) {
+        .sm\:text-base { font-size: 1rem; }
+        .sm\:text-lg { font-size: 1.125rem; }
+        .sm\:text-xl { font-size: 1.25rem; }
+        .sm\:text-2xl { font-size: 1.5rem; }
+        .sm\:w-auto { width: auto; }
+        .sm\:w-32 { width: 8rem; }
+        .sm\:w-40 { width: 10rem; }
+        .sm\:h-32 { height: 8rem; }
+        .sm\:h-40 { height: 10rem; }
+        .sm\:block { display: block; }
+        .sm\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .sm\:flex-row { flex-direction: row; }
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--dark-bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--cyber-primary);
+        border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--cyber-secondary);
+    }
+
+    /* Navigation Styles */
+    .nav-blur {
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        background: rgba(15, 23, 42, 0.95);
+        border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+    }
+
+    .nav-link {
+        position: relative;
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--radius-lg);
+        font-weight: 500;
+        transition: all var(--transition-normal);
+        color: var(--text-secondary);
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .nav-link:hover {
+        color: var(--cyber-primary);
+        background: rgba(14, 165, 233, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .nav-link.active {
+        color: var(--cyber-primary);
+        background: rgba(14, 165, 233, 0.15);
+    }
+
+    /* Card Styles */
+    .cyber-card {
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--radius-2xl);
+        padding: var(--spacing-lg);
+        transition: all var(--transition-normal);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cyber-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--cyber-primary), var(--cyber-secondary));
+        opacity: 0;
+        transition: opacity var(--transition-normal);
+    }
+
+    .cyber-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--cyber-primary);
+        box-shadow: 0 20px 40px rgba(14, 165, 233, 0.1);
+    }
+
+    .cyber-card:hover::before {
+        opacity: 1;
+    }
+
+    /* Button Styles */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        padding: 0.75rem 2rem;
+        border-radius: var(--radius-xl);
+        border: none;
+        cursor: pointer;
+        transition: all var(--transition-normal);
+        text-decoration: none;
+        font-size: 0.875rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--cyber-primary), var(--cyber-secondary));
+        color: white;
+        box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(14, 165, 233, 0.3);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        border: 2px solid var(--cyber-primary);
+        color: var(--cyber-primary);
+    }
+
+    .btn-secondary:hover {
+        background: var(--cyber-primary);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Section Title */
+    .section-title {
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--cyber-primary), var(--cyber-secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: var(--spacing-md);
+    }
+
+    /* Icons */
+    .icon {
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        vertical-align: middle;
+    }
+
+    .icon-shield::before { content: '🛡️'; }
+    .icon-user::before { content: '👤'; }
+    .icon-menu::before { content: '☰'; }
+    .icon-close::before { content: '✕'; }
+    .icon-download::before { content: '⬇️'; }
+    .icon-search::before { content: '🔍'; }
+    .icon-warning::before { content: '⚠️'; }
+    .icon-cog::before { content: '⚙️'; }
+    .icon-check::before { content: '✓'; }
+    .icon-network::before { content: '🌐'; }
+    .icon-lock::before { content: '🔒'; }
+    .icon-tools::before { content: '🔧'; }
+    .icon-code::before { content: '💻'; }
+    .icon-cloud::before { content: '☁️'; }
+    .icon-envelope::before { content: '✉️'; }
+    .icon-location::before { content: '📍'; }
+    .icon-clock::before { content: '🕒'; }
+    .icon-github::before { content: '🐙'; }
+    .icon-linkedin::before { content: '💼'; }
+    .icon-twitter::before { content: '🐦'; }
+    .icon-blog::before { content: '📝'; }
+    .icon-send::before { content: '📤'; }
+    .icon-spinner::before { content: '⟳'; }
+    .icon-external::before { content: '🔗'; }
+    .icon-trophy::before { content: '🏆'; }
+    .icon-star::before { content: '⭐'; }
+    .icon-certificate::before { content: '📜'; }
+    .icon-bug::before { content: '🐛'; }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.5;
+        }
+    }
+
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .fade-in {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .animate-pulse {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    .animate-float {
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .animate-spin {
+        animation: spin 1s linear infinite;
+    }
+
+    /* Status Indicator */
+    .status-online {
+        position: relative;
+    }
+
+    .status-online::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 12px;
+        height: 12px;
+        background: var(--accent-green);
+        border-radius: 50%;
+        border: 2px solid var(--dark-card);
+        animation: pulse 2s infinite;
+    }
+
+    /* Skill Progress Bars */
+    .skill-bar {
+        height: 6px;
+        background: var(--dark-border);
+        border-radius: 3px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .skill-progress {
+        height: 100%;
+        background: linear-gradient(90deg, var(--cyber-primary), var(--cyber-secondary));
+        border-radius: 3px;
+        transition: width 1s ease-out;
+        width: 0%;
+    }
+
+    /* 3D Background Canvas */
+    #cyber-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        background: radial-gradient(ellipse at center, rgba(14, 165, 233, 0.1) 0%, transparent 70%);
+    }
+
+    .particle {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: var(--cyber-primary);
+        border-radius: 50%;
+        opacity: 0.6;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    /* Form Styles */
+    input, textarea, select {
+        width: 100%;
+        background: var(--dark-card);
+        border: 1px solid var(--dark-border);
+        border-radius: var(--radius-lg);
+        padding: 0.75rem 1rem;
+        color: var(--text-primary);
+        font-family: inherit;
+        transition: border-color var(--transition-normal);
+    }
+
+    input:focus, textarea:focus, select:focus {
+        outline: none;
+        border-color: var(--cyber-primary);
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+    }
+
+    input::placeholder, textarea::placeholder {
+        color: var(--text-muted);
+    }
+
+    /* Aspect Ratio */
+    .aspect-video {
+        aspect-ratio: 16 / 9;
+    }
+
+    /* Background Utilities */
+    .bg-dark-900 {
+        background-color: #0c1220;
+    }
+
+    .bg-gradient-cyber {
+        background: linear-gradient(135deg, var(--cyber-primary), var(--cyber-secondary));
+    }
+
+    .bg-gradient-red {
+        background: linear-gradient(135deg, var(--accent-red), var(--accent-orange));
+    }
+
+    .bg-gradient-green {
+        background: linear-gradient(135deg, var(--accent-green), var(--cyber-primary));
+    }
+
+    /* Responsive Utilities */
+    @media (max-width: 767px) {
+        .container {
+            padding: 0 1rem;
+        }
+        
+        .cyber-card {
+            padding: 1rem;
+        }
+        
+        .btn {
+            padding: 0.625rem 1.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+        }
+    }
+
+    /* Loading States */
+    .loading {
+        opacity: 0.7;
+        pointer-events: none;
+    }
+
+    /* Hover Effects */
+    .hover-lift:hover {
+        transform: translateY(-2px);
+    }
+
+    .hover-scale:hover {
+        transform: scale(1.05);
+    }
+
+    /* Focus States */
+    .focus-ring:focus {
+        outline: 2px solid var(--cyber-primary);
+        outline-offset: 2px;
+    }
 </style>
-<body class="bg-black text-green-400 font-mono overflow-x-hidden">
-    <!-- Intro Terminal Overlay -->
-    <div id="intro-terminal-overlay" class="intro-terminal-overlay">
-        <div class="intro-terminal">
-            <div class="intro-terminal-header">
-                <div class="intro-terminal-buttons">
-                    <div class="intro-terminal-btn red"></div>
-                    <div class="intro-terminal-btn yellow"></div>
-                    <div class="intro-terminal-btn green"></div>
-                </div>
-                <span class="intro-terminal-title">system_init.exe</span>
-            </div>
-            <div class="intro-terminal-content">
-                <div class="intro-name-container">
-                    <div id="intro-name" class="intro-name"></div>
-                </div>
-                <div class="intro-roles">
-                    <div id="intro-roles-title" class="intro-roles-title">SYSTEM ROLES:</div>
-                    <div id="intro-role-1" class="intro-role-item">
-                        <span class="intro-role-bullet">•</span>
-                        <span>Penetration Tester</span>
+
+<body>
+    <!-- 3D Cybersecurity Background -->
+    <div id="cyber-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 nav-blur">
+        <div class="container">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-cyber rounded-lg flex items-center justify-center status-online">
+                        <span class="icon icon-shield text-white text-lg"></span>
                     </div>
-                    <div id="intro-role-2" class="intro-role-item">
-                        <span class="intro-role-bullet">•</span>
-                        <span>Computer Engineer</span>
-                    </div>
-                    <div id="intro-role-3" class="intro-role-item">
-                        <span class="intro-role-bullet">•</span>
-                        <span>Incident Investigator</span>
-                    </div>
-                    <div id="intro-role-4" class="intro-role-item">
-                        <span class="intro-role-bullet">•</span>
-                        <span>Cybersecurity Researcher</span>
+                    <div class="flex flex-col">
+                        <span class="text-lg font-bold cyber-text">DEEPAK.SEC</span>
+                        <span class="text-xs text-gray-400 hidden sm:block">Cybersecurity Analyst</span>
                     </div>
                 </div>
-                <div id="intro-continue" class="intro-continue">
-                    Press any key to continue...
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-1">
+                    <a href="#home" class="nav-link active" data-section="home">Home</a>
+                    <a href="#about" class="nav-link" data-section="about">About</a>
+                    <a href="#services" class="nav-link" data-section="services">Services</a>
+                    <a href="#projects" class="nav-link" data-section="projects">Projects</a>
+                    <a href="#skills" class="nav-link" data-section="skills">Skills</a>
+                    <a href="#contact" class="nav-link" data-section="contact">Contact</a>
                 </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg bg-dark-card border border-dark-border focus-ring">
+                    <span class="icon icon-menu cyber-text"></span>
+                </button>
             </div>
         </div>
-    </div>
 
-    <!-- Matrix Background -->
-    <canvas id="matrix-bg" class="fixed inset-0 z-0 opacity-10"></canvas>
-    
-    <!-- Cursor Trail -->
-    <div id="cursor-trail"></div>
-    
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-cyan-500/30">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full animate-pulse"></div>
-                    <h1 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400 font-orbitron">
-                        CYBERDEV.EXE
-                    </h1>
-                </div>
-                <div class="hidden md:flex items-center space-x-6">
-                    <a href="#about" class="nav-link">ABOUT</a>
-                    <a href="#projects" class="nav-link">PROJECTS</a>
-                    <a href="#skills" class="nav-link">SKILLS</a>
-                    <a href="#blog" class="nav-link">BLOG</a>
-                    <a href="#terminal" class="nav-link">TERMINAL</a>
-                </div>
-                <button id="mobile-menu" class="md:hidden text-cyan-400">
-                    <i class="fas fa-bars text-xl"></i>
-                </button>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden nav-blur border-t border-dark-border">
+            <div class="px-4 py-6 space-y-2">
+                <a href="#home" class="block nav-link" data-section="home">Home</a>
+                <a href="#about" class="block nav-link" data-section="about">About</a>
+                <a href="#services" class="block nav-link" data-section="services">Services</a>
+                <a href="#projects" class="block nav-link" data-section="projects">Projects</a>
+                <a href="#skills" class="block nav-link" data-section="skills">Skills</a>
+                <a href="#contact" class="block nav-link" data-section="contact">Contact</a>
             </div>
         </div>
     </nav>
 
-    <!-- Mobile Menu -->
-    <div id="mobile-nav" class="fixed inset-0 z-40 bg-black/95 backdrop-blur-md hidden">
-        <div class="flex flex-col items-center justify-center h-full space-y-8">
-            <a href="#about" class="mobile-nav-link">ABOUT</a>
-            <a href="#projects" class="mobile-nav-link">PROJECTS</a>
-            <a href="#skills" class="mobile-nav-link">SKILLS</a>
-            <a href="#blog" class="mobile-nav-link">BLOG</a>
-            <a href="#terminal" class="mobile-nav-link">TERMINAL</a>
-        </div>
-    </div>
-
     <!-- Hero Section -->
-    <section class="relative min-h-screen flex items-center justify-center pt-20">
-        <div class="container mx-auto px-4 text-center">
-            <div class="hero-content">
-                <h1 class="text-4xl md:text-7xl font-bold mb-6 font-orbitron">
-  <!-- <span class="modern-logo-text">Hi, I'm</span> -->
-  <br>
-  <span class="modern-logo-name glitch-text" data-text="DEEPAK SIVAN">DEEPAK SIVAN</span>
-</h1>
-                <div class="typing-container mb-8">
-                    <span class="text-xl md:text-2xl text-gray-300">></span>
-                    <span id="typing-text" class="text-xl md:text-2xl text-cyan-400 ml-2"></span>
-                    <span class="cursor-blink">|</span>
+    <section id="home" class="min-h-screen flex items-center justify-center pt-16 relative z-10">
+        <div class="container">
+            <div class="max-w-4xl mx-auto text-center fade-in">
+                <!-- Avatar -->
+                <div class="mb-8 flex justify-center">
+                    <div class="relative">
+                        <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-2xl bg-gradient-cyber p-1">
+                            <div class="w-full h-full rounded-2xl bg-dark-card flex items-center justify-center">
+                                <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-xl bg-gradient-cyber flex items-center justify-center text-4xl text-white font-bold">
+                                    DS
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute -bottom-2 -right-2 w-8 h-8 bg-green rounded-full border-4 border-dark-bg animate-pulse" style="background-color: var(--accent-green);"></div>
+                    </div>
                 </div>
-                <p class="text-lg md:text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-                    Penetrating digital barriers • Crafting secure solutions • Exploring the cyber frontier
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <button class="cyber-btn primary">
-                        <i class="fas fa-terminal mr-2"></i>
-                        INITIALIZE_CONTACT
-                    </button>
-                    <button class="cyber-btn secondary">
-                        <i class="fas fa-download mr-2"></i>
-                        DOWNLOAD_RESUME
-                    </button>
-                    <button class="cyber-btn primary">
-                      <i class="fas fa-download mr-2"></i>
-                      LEARN_CYBERSECURITY
-                  </button>
-              </div>
+
+                <!-- Main Content -->
+                <div class="space-y-6">
+                    <div class="space-y-2">
+                        <p class="cyber-text text-sm sm:text-base font-mono" id="typewriter">{'> whoami'}</p>
+                        <h1 class="section-title">Deepak Sivan</h1>
+                        <p class="text-xl sm:text-2xl text-gray-300 font-medium">Cybersecurity Analyst & Security Engineer</p>
+                    </div>
+                    
+                    <p class="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto">
+                        Specialized in threat analysis, vulnerability assessment, and security architecture. 
+                        Protecting digital assets through advanced security methodologies and continuous monitoring.
+                    </p>
+
+                    <!-- Stats -->
+                    <div class="grid grid-cols-3 gap-4 max-w-md mx-auto my-8">
+                        <div class="cyber-card text-center p-4">
+                            <div class="text-2xl font-bold cyber-text">5+</div>
+                            <div class="text-xs text-gray-400">Years</div>
+                        </div>
+                        <div class="cyber-card text-center p-4">
+                            <div class="text-2xl font-bold cyber-text">100+</div>
+                            <div class="text-xs text-gray-400">Threats Mitigated</div>
+                        </div>
+                        <div class="cyber-card text-center p-4">
+                            <div class="text-2xl font-bold cyber-text">24/7</div>
+                            <div class="text-xs text-gray-400">Monitoring</div>
+                        </div>
+                    </div>
+
+                    <!-- CTA Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
+                        <button class="btn btn-primary w-full sm:w-auto">
+                            <span class="icon icon-download mr-2"></span>
+                            Security Portfolio
+                        </button>
+                        <button class="btn btn-secondary w-full sm:w-auto">
+                            <span class="icon icon-shield mr-2"></span>
+                            View Certifications
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Scroll Indicator -->
-        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <div class="w-6 h-10 border-2 border-cyan-400 rounded-full flex justify-center">
-                <div class="w-1 h-3 bg-cyan-400 rounded-full mt-2 animate-pulse"></div>
             </div>
         </div>
     </section>
 
     <!-- About Section -->
-    <section id="about" class="py-20 relative">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-16">
-                <h2 class="section-title">ABOUT_PROTOCOL</h2>
-                <div class="section-line"></div>
+    <section id="about" class="py-20 relative z-10">
+        <div class="container">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="section-title">About Me</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">
+                    Dedicated cybersecurity professional with expertise in threat intelligence, 
+                    incident response, and security architecture design.
+                </p>
             </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <div class="order-2 lg:order-1">
-                    <div class="cyber-card">
-                        <div class="avatar-container mb-6">
-                            <div class="avatar-frame">
-                                <img src="/images/gif/Marix.gif" alt="Avatar" class="avatar-img">
-                                <div class="avatar-scan"></div>
-                            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                <!-- Professional Profile -->
+                <div class="cyber-card fade-in">
+                    <div class="flex items-center mb-6">
+                        <span class="icon icon-user cyber-text text-2xl mr-4"></span>
+                        <h3 class="text-xl font-bold">Professional Profile</h3>
+                    </div>
+                    <p class="text-gray-300 mb-6">
+                        Experienced cybersecurity analyst with a proven track record in identifying, 
+                        analyzing, and mitigating security threats. Specialized in penetration testing, 
+                        vulnerability assessments, and security incident response.
+                    </p>
+                    
+                    <!-- Key Metrics -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-dark-900 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold cyber-text">99.9%</div>
+                            <div class="text-sm text-gray-400">Uptime Maintained</div>
                         </div>
-                        <h3 class="text-2xl font-bold text-cyan-400 mb-4 font-orbitron">IDENTITY_CONFIRMED</h3>
-                        <p class="text-gray-300 leading-relaxed mb-6">
-                            A digital architect navigating the intersection of cybersecurity and development. 
-                            Specializing in penetration testing, secure coding practices, and building resilient systems 
-                            that withstand the chaos of the digital frontier.
-                        </p>
-                        <p class="text-gray-300 leading-relaxed mb-6">
-                            When not hunting vulnerabilities or crafting code, I explore the depths of ethical hacking, 
-                            contribute to open-source security tools, and share knowledge through technical writing.
-                        </p>
-                        <div class="flex flex-wrap gap-4">
-                            <span class="skill-tag">Ethical Hacker</span>
-                            <span class="skill-tag">Full-Stack Dev</span>
-                            <span class="skill-tag">Security Researcher</span>
+                        <div class="bg-dark-900 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-green">Zero</div>
+                            <div class="text-sm text-gray-400">Successful Breaches</div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="order-1 lg:order-2">
-                    <div class="cyber-card">
-                        <h3 class="text-xl font-bold text-purple-400 mb-4 font-orbitron">TRYHACKME_NODE</h3>
-                        <div class="terminal-window">
-                            <div class="terminal-header">
-                                <div class="terminal-buttons">
-                                    <div class="terminal-btn red"></div>
-                                    <div class="terminal-btn yellow"></div>
-                                    <div class="terminal-btn green"></div>
-                                </div>
-                                <span class="terminal-title">secure_connection.exe</span>
+
+                <!-- Certifications & Achievements -->
+                <div class="cyber-card fade-in">
+                    <div class="flex items-center mb-6">
+                        <span class="icon icon-certificate cyber-text text-2xl mr-4"></span>
+                        <h3 class="text-xl font-bold">Certifications & Achievements</h3>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center p-3 bg-dark-900 rounded-lg">
+                            <div class="w-10 h-10 bg-gradient-cyber rounded-lg flex items-center justify-center mr-4">
+                                <span class="icon icon-cloud text-white"></span>
                             </div>
-                            <div class="terminal-content">
-                                <div class="text-green-400 mb-2">$ connecting to tryhackme.com...</div>
-                                <div class="text-cyan-400 mb-4">$ authentication successful</div>
-                                <div class="flex justify-center">
-                                    <iframe src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=3979148" 
-                                            style="border: none; width: 100%; height: 200px;" 
-                                            class="rounded-lg"></iframe>
-                                </div>
+                            <div>
+                                <h4 class="font-semibold">AWS Security Specialist</h4>
+                                <p class="text-sm text-gray-400">Cloud Security Architecture</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center p-3 bg-dark-900 rounded-lg">
+                            <div class="w-10 h-10 bg-gradient-cyber rounded-lg flex items-center justify-center mr-4">
+                                <span class="icon icon-shield text-white"></span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">CISSP Certified</h4>
+                                <p class="text-sm text-gray-400">Information Security Professional</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center p-3 bg-dark-900 rounded-lg">
+                            <div class="w-10 h-10 bg-gradient-red rounded-lg flex items-center justify-center mr-4">
+                                <span class="icon icon-bug text-white"></span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Bug Bounty Hunter</h4>
+                                <p class="text-sm text-gray-400">Hall of Fame - Multiple Platforms</p>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 relative z-10" style="background: rgba(12, 18, 32, 0.5);">
+        <div class="container">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="section-title">Security Services</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">
+                    Comprehensive cybersecurity solutions to protect your digital infrastructure
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- Penetration Testing -->
+                <div class="cyber-card fade-in">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-cyber rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <span class="icon icon-search text-white text-2xl"></span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Penetration Testing</h3>
+                        <p class="text-gray-400 text-sm">Comprehensive security assessments to identify vulnerabilities</p>
+                    </div>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li class="flex items-center">
+                            <span class="icon icon-check text-green mr-2"></span>
+                            Network Security Testing
+                        </li>
+                        <li class="flex items-center">
+                            <span class="icon icon-check text-green mr-2"></span>
+                            Web Application Security
+                        </li>
+                        <li class="flex items-center">
+                            <span class="icon icon-check text-green mr-2"></span>
+                            Social Engineering Tests
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Threat Analysis -->
+                <div class="cyber-card fade-in">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-red rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <span class="icon icon-warning text-white text-2xl"></span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Threat Intelligence</h3>
+                        <p class="text-gray-400 text-sm">Advanced threat detection and analysis capabilities</p>
+                    </div>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li class="flex items-center">
+                            <span class="icon icon-check text-green mr-2"></span>
+                            Real-time Monitoring
+                        </li>
+                        <li class="flex items-center">
+                            <span class="icon icon-check text-green mr-2"></span>
+                            Malware Analysis
+                        </li>
+                        <li class="flex items-center">
+                            <span class="icon icon-check text-green mr-2"></span>
+                            Incident Response
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Security Architecture -->
+                <div class="cyber-card fade-in">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-green rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <span class="icon icon-cog text-white text-2xl"></span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Security Architecture</h3>
+                        <p class="text-gray-400 text-sm">Design and implement robust security frameworks</p>
+                    </div>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li class="flex items-center">
+                            <span class="icon icon-check text-green mr-2"></span>
+                            Zero Trust Architecture
+                        </li>
+                        <li class="flex items-center">
+                            <span class="icon icon-check text-green mr-2"></span>
+                            Cloud Security Design
+                        </li>
+                        <li class="flex items-center">
+                            <span class="icon icon-check text-green mr-2"></span>
+                            Compliance Frameworks
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Projects Section -->
-    <section id="projects" class="py-20 relative">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-16">
-                <h2 class="section-title">PROJECT_ARCHIVE</h2>
-                <div class="section-line"></div>
+    <section id="projects" class="py-20 relative z-10">
+        <div class="container">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="section-title">Security Projects</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">
+                    Recent cybersecurity projects and security tools development
+                </p>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="project-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="project-image">
-                        <img src="/placeholder.svg?height=200&width=300" alt="Project 1">
-                        <div class="project-overlay">
-                            <button class="project-btn">VIEW_CODE</button>
-                            <button class="project-btn">LIVE_DEMO</button>
-                        </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- Project 1 -->
+                <div class="cyber-card fade-in">
+                    <div class="aspect-video bg-gradient-cyber rounded-lg mb-4 flex items-center justify-center">
+                        <span class="icon icon-shield text-4xl text-white"></span>
                     </div>
-                    <div class="project-content">
-                        <h3 class="project-title">VULNERABILITY_SCANNER</h3>
-                        <p class="project-description">
-                            Advanced network vulnerability assessment tool with automated reporting and remediation suggestions.
-                        </p>
-                        <div class="project-tags">
-                            <span class="project-tag">Python</span>
-                            <span class="project-tag">Nmap</span>
-                            <span class="project-tag">Security</span>
-                        </div>
+                    <h3 class="text-lg font-bold mb-2">Advanced Threat Detection System</h3>
+                    <p class="text-gray-400 text-sm mb-4">
+                        AI-powered threat detection system with real-time analysis and automated response capabilities.
+                    </p>
+                    <div class="flex gap-2 mb-4">
+                        <span class="px-2 py-1 bg-dark-900 cyber-text text-xs rounded-full font-mono">Python</span>
+                        <span class="px-2 py-1 bg-dark-900 cyber-text text-xs rounded-full font-mono">ML</span>
+                        <span class="px-2 py-1 bg-dark-900 cyber-text text-xs rounded-full font-mono">SIEM</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="btn btn-secondary text-xs flex-1">
+                            <span class="icon icon-github mr-1"></span>Code
+                        </button>
+                        <button class="btn btn-primary text-xs flex-1">
+                            <span class="icon icon-external mr-1"></span>Demo
+                        </button>
                     </div>
                 </div>
 
-                <div class="project-card" data-aos="fade-up" data-aos-delay="200">
-                    <div class="project-image">
-                        <img src="/placeholder.svg?height=200&width=300" alt="Project 2">
-                        <div class="project-overlay">
-                            <button class="project-btn">VIEW_CODE</button>
-                            <button class="project-btn">LIVE_DEMO</button>
-                        </div>
+                <!-- Project 2 -->
+                <div class="cyber-card fade-in">
+                    <div class="aspect-video bg-gradient-red rounded-lg mb-4 flex items-center justify-center">
+                        <span class="icon icon-network text-4xl text-white"></span>
                     </div>
-                    <div class="project-content">
-                        <h3 class="project-title">SECURE_CHAT_APP</h3>
-                        <p class="project-description">
-                            End-to-end encrypted messaging platform with perfect forward secrecy and zero-knowledge architecture.
-                        </p>
-                        <div class="project-tags">
-                            <span class="project-tag">Node.js</span>
-                            <span class="project-tag">WebRTC</span>
-                            <span class="project-tag">Cryptography</span>
-                        </div>
+                    <h3 class="text-lg font-bold mb-2">Network Security Scanner</h3>
+                    <p class="text-gray-400 text-sm mb-4">
+                        Comprehensive network vulnerability scanner with automated reporting and remediation suggestions.
+                    </p>
+                    <div class="flex gap-2 mb-4">
+                        <span class="px-2 py-1 bg-dark-900 cyber-text text-xs rounded-full font-mono">Go</span>
+                        <span class="px-2 py-1 bg-dark-900 cyber-text text-xs rounded-full font-mono">Nmap</span>
+                        <span class="px-2 py-1 bg-dark-900 cyber-text text-xs rounded-full font-mono">Docker</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="btn btn-secondary text-xs flex-1">
+                            <span class="icon icon-github mr-1"></span>Code
+                        </button>
+                        <button class="btn btn-primary text-xs flex-1">
+                            <span class="icon icon-external mr-1"></span>Demo
+                        </button>
                     </div>
                 </div>
 
-                <div class="project-card" data-aos="fade-up" data-aos-delay="300">
-                    <div class="project-image">
-                        <img src="/placeholder.svg?height=200&width=300" alt="Project 3">
-                        <div class="project-overlay">
-                            <button class="project-btn">VIEW_CODE</button>
-                            <button class="project-btn">LIVE_DEMO</button>
-                        </div>
+                <!-- Project 3 -->
+                <div class="cyber-card fade-in">
+                    <div class="aspect-video bg-gradient-green rounded-lg mb-4 flex items-center justify-center">
+                        <span class="icon icon-lock text-4xl text-white"></span>
                     </div>
-                    <div class="project-content">
-                        <h3 class="project-title">HONEYPOT_NETWORK</h3>
-                        <p class="project-description">
-                            Distributed honeypot system for threat intelligence gathering and attack pattern analysis.
-                        </p>
-                        <div class="project-tags">
-                            <span class="project-tag">Docker</span>
-                            <span class="project-tag">ELK Stack</span>
-                            <span class="project-tag">Threat Intel</span>
-                        </div>
+                    <h3 class="text-lg font-bold mb-2">Zero Trust Framework</h3>
+                    <p class="text-gray-400 text-sm mb-4">
+                        Implementation of zero trust security architecture for enterprise cloud environments.
+                    </p>
+                    <div class="flex gap-2 mb-4">
+                        <span class="px-2 py-1 bg-dark-900 cyber-text text-xs rounded-full font-mono">AWS</span>
+                        <span class="px-2 py-1 bg-dark-900 cyber-text text-xs rounded-full font-mono">Terraform</span>
+                        <span class="px-2 py-1 bg-dark-900 cyber-text text-xs rounded-full font-mono">IAM</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="btn btn-secondary text-xs flex-1">
+                            <span class="icon icon-github mr-1"></span>Code
+                        </button>
+                        <button class="btn btn-primary text-xs flex-1">
+                            <span class="icon icon-external mr-1"></span>Demo
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1581,85 +1042,150 @@
     </section>
 
     <!-- Skills Section -->
-    <section id="skills" class="py-20 relative">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-16">
-                <h2 class="section-title">SKILL_MATRIX</h2>
-                <div class="section-line"></div>
+    <section id="skills" class="py-20 relative z-10" style="background: rgba(12, 18, 32, 0.5);">
+        <div class="container">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="section-title">Technical Skills</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">
+                    Comprehensive expertise across cybersecurity domains and technologies
+                </p>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="skill-category">
-                    <h3 class="skill-category-title">
-                        <i class="fas fa-code text-purple-400 mr-2"></i>
-                        PROGRAMMING
-                    </h3>
-                    <div class="skill-grid">
-                        <div class="skill-item">
-                            <i class="fab fa-python text-yellow-400"></i>
-                            <span>Python</span>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- Security Tools -->
+                <div class="cyber-card fade-in">
+                    <div class="flex items-center mb-6">
+                        <span class="icon icon-tools cyber-text text-xl mr-3"></span>
+                        <h3 class="text-lg font-bold">Security Tools</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm">Nmap</span>
+                                <span class="text-sm cyber-text">95%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-width="95"></div>
+                            </div>
                         </div>
-                        <div class="skill-item">
-                            <i class="fab fa-js-square text-yellow-300"></i>
-                            <span>JavaScript</span>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm">Burp Suite</span>
+                                <span class="text-sm cyber-text">90%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-width="90"></div>
+                            </div>
                         </div>
-                        <div class="skill-item">
-                            <i class="fab fa-rust text-orange-400"></i>
-                            <span>Rust</span>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm">Metasploit</span>
+                                <span class="text-sm cyber-text">85%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-width="85"></div>
+                            </div>
                         </div>
-                        <div class="skill-item">
-                            <i class="fas fa-terminal text-green-400"></i>
-                            <span>Bash</span>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm">Wireshark</span>
+                                <span class="text-sm cyber-text">92%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-width="92"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="skill-category">
-                    <h3 class="skill-category-title">
-                        <i class="fas fa-shield-alt text-cyan-400 mr-2"></i>
-                        SECURITY_TOOLS
-                    </h3>
-                    <div class="skill-grid">
-                        <div class="skill-item">
-                            <i class="fas fa-search text-red-400"></i>
-                            <span>Nmap</span>
+                <!-- Programming -->
+                <div class="cyber-card fade-in">
+                    <div class="flex items-center mb-6">
+                        <span class="icon icon-code cyber-text text-xl mr-3"></span>
+                        <h3 class="text-lg font-bold">Programming</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm">Python</span>
+                                <span class="text-sm cyber-text">95%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-width="95"></div>
+                            </div>
                         </div>
-                        <div class="skill-item">
-                            <i class="fas fa-bug text-purple-400"></i>
-                            <span>Burp Suite</span>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm">Go</span>
+                                <span class="text-sm cyber-text">80%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-width="80"></div>
+                            </div>
                         </div>
-                        <div class="skill-item">
-                            <i class="fas fa-network-wired text-blue-400"></i>
-                            <span>Wireshark</span>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm">JavaScript</span>
+                                <span class="text-sm cyber-text">75%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-width="75"></div>
+                            </div>
                         </div>
-                        <div class="skill-item">
-                            <i class="fas fa-key text-yellow-400"></i>
-                            <span>Metasploit</span>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm">Bash</span>
+                                <span class="text-sm cyber-text">90%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-width="90"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="skill-category">
-                    <h3 class="skill-category-title">
-                        <i class="fas fa-server text-green-400 mr-2"></i>
-                        INFRASTRUCTURE
-                    </h3>
-                    <div class="skill-grid">
-                        <div class="skill-item">
-                            <i class="fab fa-linux text-yellow-300"></i>
-                            <span>Linux</span>
+                <!-- Cloud & Infrastructure -->
+                <div class="cyber-card fade-in">
+                    <div class="flex items-center mb-6">
+                        <span class="icon icon-cloud cyber-text text-xl mr-3"></span>
+                        <h3 class="text-lg font-bold">Cloud & Infrastructure</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm">AWS Security</span>
+                                <span class="text-sm cyber-text">90%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-width="90"></div>
+                            </div>
                         </div>
-                        <div class="skill-item">
-                            <i class="fab fa-docker text-blue-400"></i>
-                            <span>Docker</span>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm">Docker</span>
+                                <span class="text-sm cyber-text">85%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-width="85"></div>
+                            </div>
                         </div>
-                        <div class="skill-item">
-                            <i class="fab fa-aws text-orange-400"></i>
-                            <span>AWS</span>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm">Kubernetes</span>
+                                <span class="text-sm cyber-text">80%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-width="80"></div>
+                            </div>
                         </div>
-                        <div class="skill-item">
-                            <i class="fas fa-database text-cyan-400"></i>
-                            <span>PostgreSQL</span>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm">Linux</span>
+                                <span class="text-sm cyber-text">95%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-width="95"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1667,153 +1193,115 @@
         </div>
     </section>
 
-    <!-- Blog Section -->
-    <section id="blog" class="py-20 relative">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-16">
-                <h2 class="section-title">BLOG_FEED</h2>
-                <div class="section-line"></div>
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 relative z-10">
+        <div class="container">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="section-title">Get In Touch</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">
+                    Ready to secure your digital infrastructure? Let's discuss your cybersecurity needs.
+                </p>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <article class="blog-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="blog-header">
-                        <div class="blog-date">2024.01.15</div>
-                        <div class="blog-category">SECURITY</div>
-                    </div>
-                    <h3 class="blog-title">Advanced SQL Injection Techniques</h3>
-                    <p class="blog-excerpt">
-                        Exploring modern SQL injection vectors and defense mechanisms in contemporary web applications...
-                    </p>
-                    <a href="#" class="blog-link">
-                        READ_MORE <i class="fas fa-arrow-right ml-2"></i>
-                    </a>
-                </article>
 
-                <article class="blog-card" data-aos="fade-up" data-aos-delay="200">
-                    <div class="blog-header">
-                        <div class="blog-date">2024.01.08</div>
-                        <div class="blog-category">DEVELOPMENT</div>
-                    </div>
-                    <h3 class="blog-title">Building Secure APIs with Node.js</h3>
-                    <p class="blog-excerpt">
-                        Best practices for implementing authentication, authorization, and input validation in REST APIs...
-                    </p>
-                    <a href="#" class="blog-link">
-                        READ_MORE <i class="fas fa-arrow-right ml-2"></i>
-                    </a>
-                </article>
-
-                <article class="blog-card" data-aos="fade-up" data-aos-delay="300">
-                    <div class="blog-header">
-                        <div class="blog-date">2023.12.28</div>
-                        <div class="blog-category">TUTORIAL</div>
-                    </div>
-                    <h3 class="blog-title">Setting Up a Home Lab for Pentesting</h3>
-                    <p class="blog-excerpt">
-                        Complete guide to creating a virtualized environment for practicing ethical hacking techniques...
-                    </p>
-                    <a href="#" class="blog-link">
-                        READ_MORE <i class="fas fa-arrow-right ml-2"></i>
-                    </a>
-                </article>
-            </div>
-        </div>
-    </section>
-
-    <!-- Terminal Section -->
-    <section id="terminal" class="py-20 relative">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-16">
-                <h2 class="section-title">VISITOR_TERMINAL</h2>
-                <div class="section-line"></div>
-            </div>
-            
             <div class="max-w-4xl mx-auto">
-                <div class="terminal-container">
-                    <div class="terminal-header">
-                        <div class="terminal-buttons">
-                            <div class="terminal-btn red"></div>
-                            <div class="terminal-btn yellow"></div>
-                            <div class="terminal-btn green"></div>
-                        </div>
-                        <span class="terminal-title">visitor_scan.exe</span>
-                    </div>
-                    <div class="terminal-body">
-                        <div id="scan-status" class="scan-status">
-                            <div class="scan-line">
-                                <span class="text-cyan-400">></span> Initializing visitor scan protocol...
-                            </div>
-                            <div class="scan-line">
-                                <span class="text-green-400">></span> Establishing secure connection...
-                            </div>
-                            <div class="scan-line">
-                                <span class="text-purple-400">></span> Gathering system information...
-                            </div>
-                            <div class="scan-progress">
-                                <div class="progress-bar">
-                                    <div class="progress-fill"></div>
-                                </div>
-                                <span class="progress-text">Scanning... <span id="progress-percent">0</span>%</span>
-                            </div>
-                        </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Contact Info -->
+                    <div class="cyber-card fade-in">
+                        <h3 class="text-lg font-bold mb-6 flex items-center">
+                            <span class="icon icon-user cyber-text mr-3"></span>
+                            Contact Information
+                        </h3>
                         
-                        <div id="visitor-data" class="visitor-data hidden">
-                            <div class="data-grid">
-                                <div class="data-item">
-                                    <span class="data-label">IP_ADDRESS:</span>
-                                    <span class="data-value" id="ip-address">---.---.---.---</span>
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-lg flex items-center justify-center mr-4" style="background: rgba(14, 165, 233, 0.2);">
+                                    <span class="icon icon-envelope cyber-text"></span>
                                 </div>
-                                <div class="data-item">
-                                    <span class="data-label">LOCATION:</span>
-                                    <span class="data-value" id="location">Unknown, Unknown</span>
-                                </div>
-                                <div class="data-item">
-                                    <span class="data-label">BROWSER:</span>
-                                    <span class="data-value" id="browser">Unknown Browser</span>
-                                </div>
-                                <div class="data-item">
-                                    <span class="data-label">OS_SYSTEM:</span>
-                                    <span class="data-value" id="os-system">Unknown OS</span>
-                                </div>
-                                <div class="data-item">
-                                    <span class="data-label">SCREEN_RES:</span>
-                                    <span class="data-value" id="screen-res">0x0</span>
-                                </div>
-                                <div class="data-item">
-                                    <span class="data-label">TIMEZONE:</span>
-                                    <span class="data-value" id="timezone">UTC+0</span>
-                                </div>
-                                <div class="data-item">
-                                    <span class="data-label">BATTERY:</span>
-                                    <span class="data-value" id="battery">Unknown</span>
-                                </div>
-                                <div class="data-item">
-                                    <span class="data-label">CONNECTION:</span>
-                                    <span class="data-value" id="connection">Unknown</span>
-                                </div>
-                                <div class="data-item">
-                                    <span class="data-label">REFERRER:</span>
-                                    <span class="data-value" id="referrer">Direct Access</span>
+                                <div>
+                                    <div class="text-gray-400 text-sm">Email</div>
+                                    <div class="font-mono text-sm">deepak@cybersec.dev</div>
                                 </div>
                             </div>
                             
-                            <div class="terminal-actions">
-                                <button id="export-data" class="cyber-btn secondary">
-                                    <i class="fas fa-download mr-2"></i>
-                                    EXPORT_REPORT
-                                </button>
-                                <button id="rescan" class="cyber-btn primary">
-                                    <i class="fas fa-redo mr-2"></i>
-                                    RESCAN_TARGET
-                                </button>
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-lg flex items-center justify-center mr-4" style="background: rgba(14, 165, 233, 0.2);">
+                                    <span class="icon icon-location cyber-text"></span>
+                                </div>
+                                <div>
+                                    <div class="text-gray-400 text-sm">Location</div>
+                                    <div class="font-mono text-sm">Bangalore, India</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-lg flex items-center justify-center mr-4" style="background: rgba(14, 165, 233, 0.2);">
+                                    <span class="icon icon-clock cyber-text"></span>
+                                </div>
+                                <div>
+                                    <div class="text-gray-400 text-sm">Response Time</div>
+                                    <div class="font-mono text-sm">{'< 24 hours'}</div>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="terminal-disclaimer">
-                            <i class="fas fa-info-circle text-yellow-400 mr-2"></i>
-                            All data shown is publicly accessible and not stored. This terminal is for educational and entertainment purposes only.
+
+                        <!-- Social Links -->
+                        <div class="mt-8 pt-6 border-t border-dark-border">
+                            <h4 class="text-md font-bold mb-4 cyber-text">Connect</h4>
+                            <div class="flex space-x-3">
+                                <a href="#" class="w-10 h-10 bg-dark-card hover:bg-cyber-primary rounded-lg flex items-center justify-center transition-colors hover-lift">
+                                    <span class="icon icon-github"></span>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-dark-card hover:bg-cyber-primary rounded-lg flex items-center justify-center transition-colors hover-lift">
+                                    <span class="icon icon-linkedin"></span>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-dark-card hover:bg-cyber-primary rounded-lg flex items-center justify-center transition-colors hover-lift">
+                                    <span class="icon icon-twitter"></span>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-dark-card hover:bg-cyber-primary rounded-lg flex items-center justify-center transition-colors hover-lift">
+                                    <span class="icon icon-blog"></span>
+                                </a>
+                            </div>
                         </div>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <div class="cyber-card fade-in">
+                        <h3 class="text-lg font-bold mb-6 flex items-center">
+                            <span class="icon icon-send cyber-text mr-3"></span>
+                            Send Message
+                        </h3>
+                        
+                        <form class="space-y-6" id="contact-form">
+                            <div>
+                                <label class="block text-sm font-medium mb-2 cyber-text">Name</label>
+                                <input type="text" required placeholder="Your name">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-2 cyber-text">Email</label>
+                                <input type="email" required placeholder="your@email.com">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-2 cyber-text">Subject</label>
+                                <select>
+                                    <option>Security Consultation</option>
+                                    <option>Penetration Testing</option>
+                                    <option>Threat Assessment</option>
+                                    <option>General Inquiry</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-2 cyber-text">Message</label>
+                                <textarea rows="5" required placeholder="Describe your security requirements..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary w-full">
+                                <span class="icon icon-shield mr-2"></span>
+                                Send Secure Message
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -1821,754 +1309,351 @@
     </section>
 
     <!-- Footer -->
-    <footer class="py-12 border-t border-cyan-500/30">
-        <div class="container mx-auto px-4">
+    <footer class="py-12 border-t border-dark-border relative z-10">
+        <div class="container">
             <div class="flex flex-col md:flex-row items-center justify-between">
-                <div class="mb-6 md:mb-0">
-                    <h3 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400 font-orbitron">
-                        CYBERDEV.EXE
-                    </h3>
-                    <p class="text-gray-400 text-sm mt-2">Securing the digital frontier, one line of code at a time.</p>
+                <div class="mb-6 md:mb-0 text-center md:text-left">
+                    <div class="flex items-center justify-center md:justify-start space-x-3 mb-2">
+                        <div class="w-8 h-8 bg-gradient-cyber rounded-lg flex items-center justify-center">
+                            <span class="icon icon-shield text-white text-sm"></span>
+                        </div>
+                        <span class="text-xl font-bold cyber-text">DEEPAK.SEC</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Securing digital futures, one system at a time.</p>
                 </div>
                 
-                <div class="flex items-center space-x-6">
-                    <a href="#" class="social-link" data-tooltip="GitHub">
-                        <i class="fab fa-github"></i>
-                    </a>
-                    <a href="#" class="social-link" data-tooltip="LinkedIn">
-                        <i class="fab fa-linkedin"></i>
-                    </a>
-                    <a href="#" class="social-link" data-tooltip="TryHackMe">
-                        <i class="fas fa-flag"></i>
-                    </a>
-                    <a href="#" class="social-link" data-tooltip="Medium">
-                        <i class="fab fa-medium"></i>
-                    </a>
+                <div class="flex items-center space-x-4">
+                    <div class="text-sm text-gray-400">
+                        <span class="cyber-text">Status:</span>
+                        <span class="text-green ml-1">Available for Projects</span>
+                    </div>
                 </div>
             </div>
             
-            <div class="text-center mt-8 pt-8 border-t border-gray-800">
+            <div class="text-center mt-8 pt-8 border-t border-dark-border">
                 <p class="text-gray-500 text-sm">
-                    © 2024 CyberDev Portfolio. All rights reserved. | Built with 💚 and lots of ☕
+                    © 2024 Deepak Sivan. All rights reserved. | 
+                    <span class="cyber-text">Encrypted & Secured</span>
                 </p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Enhanced Home page JavaScript functionality with Intro Terminal
-
-document.addEventListener("DOMContentLoaded", () => {
-  // Initialize intro terminal first
-  initIntroTerminal()
-  
-  // Initialize all other features after intro
-  setTimeout(() => {
-    initMatrixBackground()
-    initCursorTrail()
-    initTypingEffect()
-    initLogoAnimation()
-    initMobileMenu()
-    initSmoothScroll()
-    initVisitorTerminal()
-    initScrollAnimations()
-    addHoverEffects()
-    addSoundEffects()
-  }, 100)
-})
-
-// Intro Terminal functionality
-function initIntroTerminal() {
-  const overlay = document.getElementById('intro-terminal-overlay')
-  const nameElement = document.getElementById('intro-name')
-  const rolesTitle = document.getElementById('intro-roles-title')
-  const roleElements = [
-    document.getElementById('intro-role-1'),
-    document.getElementById('intro-role-2'),
-    document.getElementById('intro-role-3'),
-    document.getElementById('intro-role-4')
-  ]
-  const continueElement = document.getElementById('intro-continue')
-  
-  const fullName = "Hi, I'm Deepak Sivan"
-  let nameIndex = 0
-  let isTypingComplete = false
-  
-  // Audio context for typing sounds
-  let audioContext
-  
-  function initAudio() {
-    if (!audioContext) {
-      audioContext = new (window.AudioContext || window.webkitAudioContext)()
-    }
-  }
-  
-  function playTypingSound() {
-    if (!audioContext) return
-    
-    const oscillator = audioContext.createOscillator()
-    const gainNode = audioContext.createGain()
-    
-    oscillator.connect(gainNode)
-    gainNode.connect(audioContext.destination)
-    
-    // Randomize frequency for more realistic typing sound
-    oscillator.frequency.value = 800 + Math.random() * 200
-    oscillator.type = 'square'
-    
-    gainNode.gain.setValueAtTime(0.05, audioContext.currentTime)
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1)
-    
-    oscillator.start(audioContext.currentTime)
-    oscillator.stop(audioContext.currentTime + 0.1)
-  }
-  
-  function typewriterEffect() {
-    if (nameIndex < fullName.length) {
-      nameElement.textContent = fullName.substring(0, nameIndex + 1)
-      
-      // Play typing sound
-      playTypingSound()
-      
-      // Add glitch effect occasionally
-      if (Math.random() < 0.1) {
-        nameElement.classList.add('glitch')
-        setTimeout(() => nameElement.classList.remove('glitch'), 100)
-      }
-      
-      nameIndex++
-      
-      // Variable typing speed for more realistic effect
-      const typingSpeed = Math.random() * 100 + 50
-      setTimeout(typewriterEffect, typingSpeed)
-    } else {
-      isTypingComplete = true
-      showRoles()
-    }
-  }
-  
-  function showRoles() {
-    // Show roles title first
-    setTimeout(() => {
-      rolesTitle.classList.add('visible')
-    }, 500)
-    
-    // Show each role with staggered animation
-    roleElements.forEach((role, index) => {
-      setTimeout(() => {
-        role.classList.add('visible')
-      }, 1000 + (index * 300))
-    })
-    
-    // Show continue message
-    setTimeout(() => {
-      continueElement.classList.add('blink')
-    }, 2500)
-  }
-  
-  function closeIntroTerminal() {
-    overlay.classList.remove('active')
-    setTimeout(() => {
-      overlay.style.display = 'none'
-    }, 500)
-  }
-  
-  // Show intro terminal
-  setTimeout(() => {
-    overlay.classList.add('active')
-    initAudio()
-    
-    // Start typewriter effect after terminal animation
-    setTimeout(() => {
-      typewriterEffect()
-    }, 800)
-  }, 500)
-  
-  // Close terminal on any key press or click
-  function handleClose() {
-    if (isTypingComplete) {
-      closeIntroTerminal()
-      document.removeEventListener('keydown', handleClose)
-      document.removeEventListener('click', handleClose)
-    }
-  }
-  
-  document.addEventListener('keydown', handleClose)
-  document.addEventListener('click', handleClose)
-  
-  // Auto close after 8 seconds if user doesn't interact
-  setTimeout(() => {
-    if (overlay.classList.contains('active')) {
-      closeIntroTerminal()
-    }
-  }, 8000)
-}
-
-// Matrix background effect
-function initMatrixBackground() {
-  const canvas = document.getElementById("matrix-bg")
-  const ctx = canvas.getContext("2d")
-
-  canvas.width = window.innerWidth
-  canvas.height = window.innerHeight
-
-  const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%+-/~{[|`]}"
-  const matrixArray = matrix.split("")
-
-  const fontSize = 10
-  const columns = canvas.width / fontSize
-
-  const drops = []
-  for (let x = 0; x < columns; x++) {
-    drops[x] = 1
-  }
-
-  function drawMatrix() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.04)"
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-    ctx.fillStyle = "#00ff41"
-    ctx.font = fontSize + "px monospace"
-
-    for (let i = 0; i < drops.length; i++) {
-      const text = matrixArray[Math.floor(Math.random() * matrixArray.length)]
-      ctx.fillText(text, i * fontSize, drops[i] * fontSize)
-
-      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-        drops[i] = 0
-      }
-      drops[i]++
-    }
-  }
-
-  setInterval(drawMatrix, 35)
-
-  // Resize canvas on window resize
-  window.addEventListener("resize", () => {
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
-  })
-}
-
-// Cursor trail effect
-function initCursorTrail() {
-  const trail = document.getElementById("cursor-trail")
-  let mouseX = 0
-  let mouseY = 0
-  let trailX = 0
-  let trailY = 0
-
-  document.addEventListener("mousemove", (e) => {
-    mouseX = e.clientX
-    mouseY = e.clientY
-    trail.style.opacity = "1"
-  })
-
-  document.addEventListener("mouseleave", () => {
-    trail.style.opacity = "0"
-  })
-
-  function animateTrail() {
-    trailX += (mouseX - trailX) * 0.1
-    trailY += (mouseY - trailY) * 0.1
-
-    trail.style.left = trailX - 10 + "px"
-    trail.style.top = trailY - 10 + "px"
-
-    requestAnimationFrame(animateTrail)
-  }
-
-  animateTrail()
-}
-
-// Typing effect
-function initTypingEffect() {
-  const typingText = document.getElementById("typing-text")
-  const phrases = [
-    "Ethical Hacker",
-    "Security Researcher",
-    "Full-Stack Developer",
-    "Penetration Tester",
-    "Cybersecurity Enthusiast",
-  ]
-
-  let phraseIndex = 0
-  let charIndex = 0
-  let isDeleting = false
-
-  function typeEffect() {
-    const currentPhrase = phrases[phraseIndex]
-
-    if (isDeleting) {
-      typingText.textContent = currentPhrase.substring(0, charIndex - 1)
-      charIndex--
-    } else {
-      typingText.textContent = currentPhrase.substring(0, charIndex + 1)
-      charIndex++
-    }
-
-    let typeSpeed = isDeleting ? 50 : 100
-
-    if (!isDeleting && charIndex === currentPhrase.length) {
-      typeSpeed = 2000
-      isDeleting = true
-    } else if (isDeleting && charIndex === 0) {
-      isDeleting = false
-      phraseIndex = (phraseIndex + 1) % phrases.length
-      typeSpeed = 500
-    }
-
-    setTimeout(typeEffect, typeSpeed)
-  }
-
-  typeEffect()
-}
-
-// Enhanced logo animation on scroll
-function initLogoAnimation() {
-  const logoName = document.querySelector(".modern-logo-name")
-  const logoText = document.querySelector(".modern-logo-text")
-
-  if (!logoName || !logoText) return
-
-  // Add intersection observer for enhanced effects
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          // Add special animation class when in view
-          logoName.style.animationPlayState = "running"
-          logoText.style.animationPlayState = "running"
-
-          // Add a subtle shake effect on first view
-          setTimeout(() => {
-            logoName.style.animation += ", logo-shake 0.5s ease-out"
-          }, 1000)
+        // Custom 3D Background Animation (without Three.js)
+        function createCyberBackground() {
+            const container = document.getElementById('cyber-bg');
+            const particleCount = 50;
+            
+            // Create particles
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                container.appendChild(particle);
+            }
+            
+            // Create network lines
+            const canvas = document.createElement('canvas');
+            canvas.style.position = 'absolute';
+            canvas.style.top = '0';
+            canvas.style.left = '0';
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
+            canvas.style.pointerEvents = 'none';
+            canvas.style.opacity = '0.3';
+            container.appendChild(canvas);
+            
+            const ctx = canvas.getContext('2d');
+            let animationId;
+            
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            
+            function drawNetwork() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.strokeStyle = '#0ea5e9';
+                ctx.lineWidth = 1;
+                
+                const time = Date.now() * 0.001;
+                const points = [];
+                
+                // Generate connection points
+                for (let i = 0; i < 8; i++) {
+                    points.push({
+                        x: (Math.sin(time + i) * 0.3 + 0.5) * canvas.width,
+                        y: (Math.cos(time * 0.7 + i) * 0.3 + 0.5) * canvas.height
+                    });
+                }
+                
+                // Draw connections
+                for (let i = 0; i < points.length; i++) {
+                    for (let j = i + 1; j < points.length; j++) {
+                        const distance = Math.sqrt(
+                            Math.pow(points[i].x - points[j].x, 2) + 
+                            Math.pow(points[i].y - points[j].y, 2)
+                        );
+                        
+                        if (distance < 200) {
+                            ctx.globalAlpha = (200 - distance) / 200 * 0.5;
+                            ctx.beginPath();
+                            ctx.moveTo(points[i].x, points[i].y);
+                            ctx.lineTo(points[j].x, points[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                
+                animationId = requestAnimationFrame(drawNetwork);
+            }
+            
+            resizeCanvas();
+            drawNetwork();
+            
+            window.addEventListener('resize', resizeCanvas);
+            
+            return () => {
+                cancelAnimationFrame(animationId);
+                window.removeEventListener('resize', resizeCanvas);
+            };
         }
-      })
-    },
-    { threshold: 0.5 },
-  )
 
-  observer.observe(logoName)
+        // Intersection Observer for fade-in animations
+        function initScrollAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
 
-  // Add hover effects
-  logoName.addEventListener("mouseenter", () => {
-    logoName.style.animationDuration = "1s"
-    logoName.style.filter = "drop-shadow(0 0 30px rgba(0, 255, 255, 0.8)) drop-shadow(0 0 40px rgba(191, 0, 255, 0.6))"
-  })
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
 
-  logoName.addEventListener("mouseleave", () => {
-    logoName.style.animationDuration = "4s"
-    logoName.style.filter = ""
-  })
-}
+            // Observe all fade-in elements
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
 
-// Mobile menu
-function initMobileMenu() {
-  const mobileMenuBtn = document.getElementById("mobile-menu")
-  const mobileNav = document.getElementById("mobile-nav")
-  const mobileNavLinks = document.querySelectorAll(".mobile-nav-link")
+            // Animate skill bars when they come into view
+            const skillObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const progressBar = entry.target;
+                        const width = progressBar.getAttribute('data-width');
+                        setTimeout(() => {
+                            progressBar.style.width = width + '%';
+                        }, 200);
+                    }
+                });
+            }, observerOptions);
 
-  mobileMenuBtn.addEventListener("click", () => {
-    mobileNav.classList.toggle("hidden")
-  })
-
-  mobileNavLinks.forEach((link) => {
-    link.addEventListener("click", () => {
-      mobileNav.classList.add("hidden")
-    })
-  })
-
-  // Close mobile menu on escape key
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !mobileNav.classList.contains("hidden")) {
-      mobileNav.classList.add("hidden")
-    }
-  })
-}
-
-// Smooth scroll
-function initSmoothScroll() {
-  const navLinks = document.querySelectorAll('a[href^="#"]')
-
-  navLinks.forEach((link) => {
-    link.addEventListener("click", (e) => {
-      e.preventDefault()
-      const targetId = link.getAttribute("href")
-      const targetSection = document.querySelector(targetId)
-
-      if (targetSection) {
-        targetSection.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        })
-      }
-    })
-  })
-}
-
-// Visitor terminal functionality
-function initVisitorTerminal() {
-  const scanStatus = document.getElementById("scan-status")
-  const visitorData = document.getElementById("visitor-data")
-  const progressFill = document.querySelector(".progress-fill")
-  const progressPercent = document.getElementById("progress-percent")
-  const exportBtn = document.getElementById("export-data")
-  const rescanBtn = document.getElementById("rescan")
-
-  let visitorInfo = {}
-
-  function startScan() {
-    // Reset UI
-    scanStatus.style.display = "block"
-    visitorData.classList.add("hidden")
-    progressFill.style.width = "0%"
-    progressPercent.textContent = "0"
-
-    // Simulate scanning progress
-    let progress = 0
-    const progressInterval = setInterval(() => {
-      progress += Math.random() * 15
-      if (progress > 100) progress = 100
-
-      progressFill.style.width = progress + "%"
-      progressPercent.textContent = Math.floor(progress)
-
-      if (progress >= 100) {
-        clearInterval(progressInterval)
-        setTimeout(() => {
-          scanStatus.style.display = "none"
-          gatherVisitorInfo()
-        }, 1000)
-      }
-    }, 200)
-  }
-
-  async function gatherVisitorInfo() {
-    try {
-      // Get IP and location info
-      const ipResponse = await fetch("https://ipapi.co/json/")
-      const ipData = await ipResponse.json()
-
-      // Get browser and system info
-      const browserInfo = getBrowserInfo()
-      const systemInfo = getSystemInfo()
-
-      visitorInfo = {
-        ip: ipData.ip || "Unknown",
-        location: `${ipData.city || "Unknown"}, ${ipData.region || "Unknown"}, ${ipData.country_name || "Unknown"}`,
-        browser: browserInfo,
-        os: systemInfo.os,
-        screenRes: `${screen.width}x${screen.height}`,
-        timezone: systemInfo.timezone,
-        battery: await getBatteryInfo(),
-        connection: getConnectionInfo(),
-        referrer: document.referrer || "Direct Access",
-      }
-
-      displayVisitorInfo()
-    } catch (error) {
-      console.error("Error gathering visitor info:", error)
-      // Fallback to basic info
-      visitorInfo = {
-        ip: "Unable to detect",
-        location: "Unknown Location",
-        browser: getBrowserInfo(),
-        os: getSystemInfo().os,
-        screenRes: `${screen.width}x${screen.height}`,
-        timezone: getSystemInfo().timezone,
-        battery: "Unknown",
-        connection: getConnectionInfo(),
-        referrer: document.referrer || "Direct Access",
-      }
-      displayVisitorInfo()
-    }
-  }
-
-  function displayVisitorInfo() {
-    document.getElementById("ip-address").textContent = visitorInfo.ip
-    document.getElementById("location").textContent = visitorInfo.location
-    document.getElementById("browser").textContent = visitorInfo.browser
-    document.getElementById("os-system").textContent = visitorInfo.os
-    document.getElementById("screen-res").textContent = visitorInfo.screenRes
-    document.getElementById("timezone").textContent = visitorInfo.timezone
-    document.getElementById("battery").textContent = visitorInfo.battery
-    document.getElementById("connection").textContent = visitorInfo.connection
-    document.getElementById("referrer").textContent = visitorInfo.referrer
-
-    visitorData.classList.remove("hidden")
-
-    // Animate data items
-    const dataItems = document.querySelectorAll(".data-item")
-    dataItems.forEach((item, index) => {
-      item.style.opacity = "0"
-      item.style.transform = "translateY(20px)"
-      setTimeout(() => {
-        item.style.opacity = "1"
-        item.style.transform = "translateY(0)"
-        item.style.transition = "all 0.3s ease"
-      }, index * 100)
-    })
-  }
-
-  function getBrowserInfo() {
-    const ua = navigator.userAgent
-    let browser = "Unknown Browser"
-
-    if (ua.includes("Chrome")) browser = "Chrome"
-    else if (ua.includes("Firefox")) browser = "Firefox"
-    else if (ua.includes("Safari")) browser = "Safari"
-    else if (ua.includes("Edge")) browser = "Edge"
-    else if (ua.includes("Opera")) browser = "Opera"
-
-    return browser
-  }
-
-  function getSystemInfo() {
-    const platform = navigator.platform
-    let os = "Unknown OS"
-
-    if (platform.includes("Win")) os = "Windows"
-    else if (platform.includes("Mac")) os = "macOS"
-    else if (platform.includes("Linux")) os = "Linux"
-    else if (platform.includes("Android")) os = "Android"
-    else if (platform.includes("iPhone")) os = "iOS"
-
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-
-    return { os, timezone }
-  }
-
-  async function getBatteryInfo() {
-    try {
-      if ("getBattery" in navigator) {
-        const battery = await navigator.getBattery()
-        return `${Math.round(battery.level * 100)}%`
-      }
-      return "Not Available"
-    } catch (error) {
-      return "Not Available"
-    }
-  }
-
-  function getConnectionInfo() {
-    if ("connection" in navigator) {
-      const connection = navigator.connection
-      return connection.effectiveType || "Unknown"
-    }
-    return "Unknown"
-  }
-
-  function exportVisitorData() {
-    const reportData = `
-VISITOR SCAN REPORT
-===================
-Generated: ${new Date().toLocaleString()}
-
-NETWORK INFORMATION:
-- IP Address: ${visitorInfo.ip}
-- Location: ${visitorInfo.location}
-- Connection: ${visitorInfo.connection}
-
-SYSTEM INFORMATION:
-- Browser: ${visitorInfo.browser}
-- Operating System: ${visitorInfo.os}
-- Screen Resolution: ${visitorInfo.screenRes}
-- Timezone: ${visitorInfo.timezone}
-- Battery Level: ${visitorInfo.battery}
-
-ACCESS INFORMATION:
-- Referrer: ${visitorInfo.referrer}
-- Scan Time: ${new Date().toLocaleString()}
-
-===================
-This report is for educational purposes only.
-All data shown is publicly accessible.
-    `.trim()
-
-    const blob = new Blob([reportData], { type: "text/plain" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `visitor_scan_${Date.now()}.txt`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-  }
-
-  // Event listeners
-  exportBtn.addEventListener("click", exportVisitorData)
-  rescanBtn.addEventListener("click", startScan)
-
-  // Start initial scan when terminal section comes into view
-  const terminalSection = document.getElementById("terminal")
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setTimeout(startScan, 500)
-          observer.unobserve(entry.target)
+            document.querySelectorAll('.skill-progress').forEach(el => {
+                skillObserver.observe(el);
+            });
         }
-      })
-    },
-    { threshold: 0.5 },
-  )
 
-  observer.observe(terminalSection)
-}
+        // Navigation functionality
+        function initNavigation() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const navLinks = document.querySelectorAll('.nav-link');
+            let isMenuOpen = false;
 
-// Scroll animations
-function initScrollAnimations() {
-  const animatedElements = document.querySelectorAll("[data-aos]")
+            // Mobile menu toggle
+            mobileMenuBtn.addEventListener('click', function() {
+                isMenuOpen = !isMenuOpen;
+                mobileMenu.classList.toggle('hidden');
+                
+                const icon = mobileMenuBtn.querySelector('.icon');
+                icon.className = isMenuOpen ? 'icon icon-close cyber-text' : 'icon icon-menu cyber-text';
+            });
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const element = entry.target
-          const animation = element.getAttribute("data-aos")
-          const delay = element.getAttribute("data-aos-delay") || 0
+            // Smooth scrolling and active link management
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    
+                    if (targetSection) {
+                        // Close mobile menu
+                        isMenuOpen = false;
+                        mobileMenu.classList.add('hidden');
+                        mobileMenuBtn.querySelector('.icon').className = 'icon icon-menu cyber-text';
 
-          setTimeout(() => {
-            element.style.opacity = "1"
-            element.style.transform = "translateY(0)"
-            element.classList.add("aos-animate")
-          }, delay)
+                        // Smooth scroll
+                        targetSection.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
 
-          observer.unobserve(element)
+                        // Update active link
+                        navLinks.forEach(l => l.classList.remove('active'));
+                        this.classList.add('active');
+                    }
+                });
+            });
+
+            // Update active link on scroll
+            function updateActiveLink() {
+                const sections = document.querySelectorAll('section[id]');
+                const scrollPos = window.scrollY + 100;
+
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    const sectionId = section.getAttribute('id');
+
+                    if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${sectionId}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', updateActiveLink);
         }
-      })
-    },
-    { threshold: 0.1 },
-  )
 
-  animatedElements.forEach((element) => {
-    element.style.opacity = "0"
-    element.style.transform = "translateY(50px)"
-    element.style.transition = "all 0.6s ease"
-    observer.observe(element)
-  })
-}
+        // Contact form handling
+        function initContactForm() {
+            const form = document.getElementById('contact-form');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalHTML = submitBtn.innerHTML;
+                
+                // Show loading state
+                submitBtn.innerHTML = '<span class="icon icon-spinner animate-spin mr-2"></span>Sending...';
+                submitBtn.disabled = true;
+                submitBtn.classList.add('loading');
 
-// Hover effects
-function addHoverEffects() {
-  // Add particle effects to buttons
-  const buttons = document.querySelectorAll(".cyber-btn")
+                // Simulate form submission
+                setTimeout(() => {
+                    submitBtn.innerHTML = '<span class="icon icon-check mr-2"></span>Message Sent!';
+                    submitBtn.style.background = 'var(--accent-green)';
+                    
+                    setTimeout(() => {
+                        submitBtn.innerHTML = originalHTML;
+                        submitBtn.disabled = false;
+                        submitBtn.classList.remove('loading');
+                        submitBtn.style.background = '';
+                        this.reset();
+                    }, 2000);
+                }, 1500);
+            });
+        }
 
-  buttons.forEach((button) => {
-    button.addEventListener("mouseenter", createParticles)
-  })
+        // Typewriter effect for hero section
+        function initTypewriter() {
+            const typewriterElement = document.getElementById('typewriter');
+            if (!typewriterElement) return;
+            
+            const text = typewriterElement.textContent;
+            typewriterElement.textContent = '';
+            
+            let i = 0;
+            function typeWriter() {
+                if (i < text.length) {
+                    typewriterElement.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 100);
+                } else {
+                    // Add blinking cursor
+                    setTimeout(() => {
+                        typewriterElement.innerHTML += '<span class="animate-pulse">|</span>';
+                    }, 500);
+                }
+            }
+            
+            setTimeout(typeWriter, 1000);
+        }
 
-  function createParticles(e) {
-    const button = e.target
-    const rect = button.getBoundingClientRect()
+        // Parallax effect for background
+        function initParallax() {
+            let ticking = false;
+            
+            function updateParallax() {
+                const scrolled = window.pageYOffset;
+                const parallax = document.getElementById('cyber-bg');
+                const speed = scrolled * 0.3;
+                
+                parallax.style.transform = `translateY(${speed}px)`;
+                ticking = false;
+            }
+            
+            function requestTick() {
+                if (!ticking) {
+                    requestAnimationFrame(updateParallax);
+                    ticking = true;
+                }
+            }
+            
+            window.addEventListener('scroll', requestTick);
+        }
 
-    for (let i = 0; i < 5; i++) {
-      const particle = document.createElement("div")
-      particle.style.position = "absolute"
-      particle.style.width = "4px"
-      particle.style.height = "4px"
-      particle.style.background = "#00ffff"
-      particle.style.borderRadius = "50%"
-      particle.style.pointerEvents = "none"
-      particle.style.zIndex = "9999"
-      particle.style.boxShadow = "0 0 10px #00ffff"
+        // Card hover effects
+        function initCardEffects() {
+            const cards = document.querySelectorAll('.cyber-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-4px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        }
 
-      const x = rect.left + Math.random() * rect.width
-      const y = rect.top + Math.random() * rect.height
+        // Initialize all functionality when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize all components
+            const cleanupBackground = createCyberBackground();
+            initScrollAnimations();
+            initNavigation();
+            initContactForm();
+            initTypewriter();
+            initParallax();
+            initCardEffects();
+            
+            // Performance optimization: cleanup on page unload
+            window.addEventListener('beforeunload', function() {
+                if (cleanupBackground) {
+                    cleanupBackground();
+                }
+            });
+            
+            // Add loading complete class to body
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 100);
+        });
 
-      particle.style.left = x + "px"
-      particle.style.top = y + "px"
+        // Error handling for better user experience
+        window.addEventListener('error', function(e) {
+            console.warn('Non-critical error handled:', e.message);
+        });
 
-      document.body.appendChild(particle)
-
-      // Animate particle
-      const animation = particle.animate(
-        [
-          { transform: "translate(0, 0) scale(1)", opacity: 1 },
-          {
-            transform: `translate(${(Math.random() - 0.5) * 100}px, ${(Math.random() - 0.5) * 100}px) scale(0)`,
-            opacity: 0,
-          },
-        ],
-        {
-          duration: 1000,
-          easing: "ease-out",
-        },
-      )
-
-      animation.onfinish = () => particle.remove()
-    }
-  }
-}
-
-// Sound effects
-function addSoundEffects() {
-  // Create audio context for sound effects
-  let audioContext
-
-  function initAudio() {
-    if (!audioContext) {
-      audioContext = new (window.AudioContext || window.webkitAudioContext)()
-    }
-  }
-
-  function playBeep(frequency = 800, duration = 100) {
-    initAudio()
-
-    const oscillator = audioContext.createOscillator()
-    const gainNode = audioContext.createGain()
-
-    oscillator.connect(gainNode)
-    gainNode.connect(audioContext.destination)
-
-    oscillator.frequency.value = frequency
-    oscillator.type = "square"
-
-    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime)
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000)
-
-    oscillator.start(audioContext.currentTime)
-    oscillator.stop(audioContext.currentTime + duration / 1000)
-  }
-
-  // Add sound to buttons
-  const buttons = document.querySelectorAll(".cyber-btn, .project-btn")
-  buttons.forEach((button) => {
-    button.addEventListener("click", () => playBeep(600, 50))
-  })
-
-  // Add sound to navigation
-  const navLinks = document.querySelectorAll(".nav-link, .mobile-nav-link")
-  navLinks.forEach((link) => {
-    link.addEventListener("click", () => playBeep(800, 30))
-  })
-}
-
-// Console easter egg
-console.log(`
- ██████╗██╗   ██╗██████╗ ███████╗██████╗ ██████╗ ███████╗██╗   ██╗
-██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔════╝██║   ██║
-██║      ╚████╔╝ ██████╔╝█████╗  ██████╔╝██║  ██║█████╗  ██║   ██║
-██║       ╚██╔╝  ██╔══██╗██╔══╝  ██╔══██╗██║  ██║██╔══╝  ╚██╗ ██╔╝
-╚██████╗   ██║   ██████╔╝███████╗██║  ██║██████╔╝███████╗ ╚████╔╝ 
- ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝  ╚═══╝  
-
-Welcome to the CyberDev Portfolio!
-System Status: ONLINE
-Security Level: MAXIMUM
-Access Level: VISITOR
-
-Try these console commands:
-- location.href = '#terminal' (Jump to terminal)
-- document.body.style.filter = 'hue-rotate(180deg)' (Change theme)
-- console.clear() (Clear console)
-
-Stay curious, stay secure! 🔐
-`)
-
+        // Optimize performance on mobile devices
+        if ('ontouchstart' in window) {
+            document.body.classList.add('touch-device');
+        }
     </script>
 </body>
 </html>

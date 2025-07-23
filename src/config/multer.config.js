@@ -2,21 +2,18 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Ensure upload directories exist
+// Create upload directories
 const createUploadDirs = () => {
-    const baseDir = path.join(__dirname, '..', 'public', 'uploads');
-    const subDirs = ['profile', 'projects', 'badges', 'blogs'];
+    const dirs = [
+        'src/public/uploads/profile',
+        'src/public/uploads/projects',
+        'src/public/uploads/badges',
+        'src/public/uploads/blogs'
+    ];
     
-    // Create base uploads directory if it doesn't exist
-    if (!fs.existsSync(baseDir)) {
-        fs.mkdirSync(baseDir, { recursive: true });
-    }
-    
-    // Create subdirectories
-    subDirs.forEach(dir => {
-        const dirPath = path.join(baseDir, dir);
-        if (!fs.existsSync(dirPath)) {
-            fs.mkdirSync(dirPath, { recursive: true });
+    dirs.forEach(dir => {
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
         }
     });
 };
@@ -26,23 +23,23 @@ createUploadDirs();
 
 // Configure storage
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        let uploadPath = path.join(__dirname, '..', 'public', 'uploads');
+    destination: function (req, file, cb) {
+        let uploadPath = 'src/public/uploads/';
         
-        // Determine subdirectory based on file type
-        if (file.fieldname === 'logoIcon' || file.fieldname === 'avatar') {
-            uploadPath = path.join(uploadPath, 'profile');
+        // Determine subdirectory based on field name
+        if (file.fieldname === 'logoIcon') {
+            uploadPath += 'profile/';
         } else if (file.fieldname === 'coverImage') {
-            uploadPath = path.join(uploadPath, 'projects');
-        } else if (file.fieldname === 'badgeIcon' || file.fieldname === 'iconUrl') {
-            uploadPath = path.join(uploadPath, 'badges');
+            uploadPath += 'projects/';
+        } else if (file.fieldname === 'badgeIcon') {
+            uploadPath += 'badges/';
         } else if (file.fieldname === 'blogImage') {
-            uploadPath = path.join(uploadPath, 'blogs');
+            uploadPath += 'blogs/';
         }
         
         cb(null, uploadPath);
     },
-    filename: (req, file, cb) => {
+    filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
     }
@@ -54,7 +51,7 @@ const fileFilter = (req, file, cb) => {
     if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
     } else {
-        cb(new Error('Invalid file type. Only JPEG, PNG, GIF and WEBP are allowed.'), false);
+        cb(new Error('Invalid file type. Only JPEG, PNG, GIF, and WEBP are allowed.'));
     }
 };
 

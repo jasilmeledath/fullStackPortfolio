@@ -32,15 +32,16 @@ const login = async (req, res, next) => {
       throw new ApiError(HTTP_STATUS.UNAUTHORIZED, 'Invalid credentials');
     }
 
-    // Generate JWT
-    const token = generateToken(user._id);
+    // Generate token
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
 
-    // Set session
-    req.session.user = {
-      id: user._id,
-      username: user.username,
-      role: user.role
-    };
+    // Set token in session
+    req.session.token = token;
+    req.session.user = user;
 
     // If it's an AJAX request, return JSON
     if (req.xhr || req.headers.accept?.includes('application/json')) {

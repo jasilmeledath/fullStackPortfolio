@@ -1,25 +1,29 @@
 const express = require('express');
 const { body } = require('express-validator');
 const upload = require('../config/multer.config');
+const { sessionGuard } = require('../middleware/session.middleware');
 const {
   getPortfolio,
-  updatePortfolio,
+  updateIntro,
   addSkill,
   addProject,
   addBlog,
   removeSkill,
   removeProject,
-  removeBlog
+  removeBlog,
+  updateAbout,
+  updateProject,
+  updateSkill,
+  updateBlog
 } = require('../controllers/portfolio.controller');
-const { verifyJWT } = require('../middleware/jwt.middleware');
 
 const router = express.Router();
 
 // Public routes
 router.get('/', getPortfolio);
 
-// Protected routes
-router.use(verifyJWT);
+// Protected routes - use sessionGuard instead of verifyJWT
+router.use(sessionGuard);
 
 router.put('/',
   upload.single('logoIcon'),
@@ -29,8 +33,21 @@ router.put('/',
     body('shortDescription').trim().notEmpty().withMessage('Short description is required'),
     body('aboutMe').trim().notEmpty().withMessage('About me section is required')
   ],
-  updatePortfolio
+  updateIntro
 );
+
+router.post('/intro', upload.single('logoIcon'), updateIntro);
+router.put('/intro', upload.single('logoIcon'), updateIntro);
+
+router.post('/about', upload.fields([
+    { name: 'avatar', maxCount: 1 },
+    { name: 'badges', maxCount: 10 }
+]), updateAbout);
+
+router.put('/about', upload.fields([
+    { name: 'avatar', maxCount: 1 },
+    { name: 'badges', maxCount: 10 }
+]), updateAbout);
 
 router.post('/skills',
   upload.single('iconUrl'),
@@ -44,6 +61,8 @@ router.post('/skills',
   addSkill
 );
 
+router.put('/skills/:id', upload.single('iconUrl'), updateSkill);
+
 router.post('/projects',
   upload.single('coverImage'),
   [
@@ -55,6 +74,10 @@ router.post('/projects',
   addProject
 );
 
+router.put('/projects/:id', upload.single('coverImage'), updateProject);
+
+router.delete('/projects/:id', removeProject);
+
 router.post('/blogs',
   upload.single('coverImage'),
   [
@@ -65,8 +88,8 @@ router.post('/blogs',
   addBlog
 );
 
-router.delete('/skills/:skillId', removeSkill);
-router.delete('/projects/:projectId', removeProject);
-router.delete('/blogs/:blogId', removeBlog);
+router.put('/blogs/:id', upload.single('coverImage'), updateBlog);
+
+router.delete('/blogs/:id', removeBlog);
 
 module.exports = router; 
